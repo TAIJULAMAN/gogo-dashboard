@@ -1,0 +1,75 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* ── Design System: #BEFFB6 Color Palette ── */
+@theme {
+  --color-primary: #BEFFB6;
+  --color-primary-dark: #2D8C3C;
+  --color-primary-darker: #1E6B2B;
+  --color-primary-light: #D9FFD4;
+  --color-primary-ultralight: #EFFFED;
+  --color-primary-50: #F5FFF4;
+  --color-sidebar: #1A3C24;
+  --color-sidebar-hover: #244D30;
+}
+
+/* Prevent layout shift when vertical scrollbar appears/disappears */
+html {
+  scrollbar-gutter: stable both-edges;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  overflow-y: auto;
+  min-height: 100dvh;
+  background-color: var(--color-primary-50);
+}
+
+/* ── Layout Animations ── */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Smooth scrollbar theming ── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary-dark);
+  border-radius: 9999px;
+  opacity: 0.4;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-darker);
+}
