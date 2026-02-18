@@ -4,7 +4,7 @@ import MainHeader from "../shared/MainHeader/MainHeader";
 import { Outlet, useLocation } from "react-router-dom";
 
 const MainLayout = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 1024);
   const [pageTransition, setPageTransition] = useState("enter");
   const location = useLocation();
   const mainRef = useRef(null);

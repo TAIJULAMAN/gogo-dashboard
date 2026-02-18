@@ -13,7 +13,7 @@ const MainHeader = ({ toggleSidebar }) => {
           <button
             onClick={toggleSidebar}
             aria-label="Toggle sidebar"
-            className="p-2 rounded-lg hover:bg-primary-ultralight focus:outline-none transition-colors"
+            className="p-2 rounded-lg focus:outline-none transition-all duration-5000 ease-in-out"
           >
             <IoMenu className="w-8 h-8 text-[#0D0D0D]" />
           </button>
@@ -37,8 +37,8 @@ const MainHeader = ({ toggleSidebar }) => {
                 className="w-8 md:w-12 h-8 md:h-12 object-cover rounded-full ring-2 ring-primary/50"
                 alt="User Avatar"
               />
-              <div>
-                <h3 className="hidden md:block text-[#0D0D0D] text-lg font-semibold">
+              <div className="hidden md:block">
+                <h3 className="text-[#0D0D0D] text-lg font-semibold">
                   Shah Aman
                 </h3>
                 <p className="text-primary-dark text-sm font-medium">Admin</p>

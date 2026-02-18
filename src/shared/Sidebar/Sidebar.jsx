@@ -24,6 +24,12 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   const currentPath = location.pathname;
   const isActive = (path) => currentPath === path;
 
+  const handleItemClick = () => {
+    if (window.innerWidth < 1024) {
+      toggleSidebar();
+    }
+  };
+
   return (
     <div
       className={`bg-sidebar text-white h-screen overflow-y-auto py-5 md:py-0 z-50 transition-transform
@@ -49,7 +55,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       {/* Sidebar Menu */}
       <ul className="mt-10 px-5 text-[10px]">
         {navItems.map(({ path, label, icon: Icon }) => (
-          <Link to={path} key={path}>
+          <Link to={path} key={path} onClick={handleItemClick}>
             <li
               className={`flex items-center gap-3 cursor-pointer transition-all duration-300 ease-in-out rounded-lg px-3 py-3 mt-2
                 ${isActive(path)
