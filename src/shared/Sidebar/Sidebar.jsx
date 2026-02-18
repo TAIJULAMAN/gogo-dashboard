@@ -14,7 +14,7 @@ const navItems = [
   { path: "/", label: "Dashboard", icon: RxDashboard },
   { path: "/user-details", label: "User Management", icon: LuUsers },
   { path: "/earnings", label: "Earnings", icon: MdOutlineInventory2 },
-  { path: "/listing", label: "Listing", icon: MdList },
+  { path: "/order-management", label: "Order Management", icon: MdList },
   { path: "/transactions", label: "Transactions", icon: MdLocalOffer },
   { path: "/settings", label: "Settings", icon: IoMdSettings },
 ];
@@ -43,8 +43,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
       {/* Logo */}
       <div className="flex justify-center items-center gap-2 px-5 mt-20">
-        <img src="/mini.png" alt="Logo" width={30} height={30} />
-        <span className="text-2xl font-bold text-primary">Hostinflu</span>
+        <span className="text-5xl font-bold text-primary">GOGO</span>
       </div>
 
       {/* Sidebar Menu */}

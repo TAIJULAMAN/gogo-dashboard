@@ -11,7 +11,6 @@ const MainLayout = () => {
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
-  /* ── Page-change animation: fade-slide on every route change ── */
   useEffect(() => {
     setPageTransition("exit");
     const timer = setTimeout(() => {
@@ -22,8 +21,7 @@ const MainLayout = () => {
   }, [location.pathname]);
 
   return (
-    <div className="flex min-h-screen relative overflow-hidden bg-primary-50">
-      {/* ── Mobile Overlay with animated backdrop ── */}
+    <div className="flex h-screen relative overflow-hidden bg-primary-50">
       <div
         onClick={toggleSidebar}
         className={`
@@ -40,7 +38,7 @@ const MainLayout = () => {
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
       {/* ── Main Content Area ── */}
-      <div className="flex flex-col w-full overflow-hidden my-5 transition-all duration-300 ease-out">
+      <div className="flex flex-col flex-1 w-full h-screen overflow-hidden transition-all duration-300 ease-out pt-5">
         {/* Header with subtle slide-down entrance */}
         <div className="animate-[slideDown_0.4s_ease-out_both]">
           <MainHeader toggleSidebar={toggleSidebar} />

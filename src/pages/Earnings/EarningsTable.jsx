@@ -1,22 +1,12 @@
-import { ConfigProvider, Modal, Table, Select } from "antd";
+import { ConfigProvider, Modal, Table } from "antd";
 import { useMemo, useState } from "react";
-import { IoSearch, IoChevronBack, IoAddOutline } from "react-icons/io5";
-import { MdBlock } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
 import { FaRegEye } from "react-icons/fa";
 
 function EarningsTable() {
-  const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-  const [isEditOpen, setIsEditOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [editUser, setEditUser] = useState(null);
   const [roleFilter, setRoleFilter] = useState();
   const [searchQuery, setSearchQuery] = useState("");
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
 
   const showViewModal = (user) => {
     setSelectedUser(user);
@@ -31,88 +21,88 @@ function EarningsTable() {
       key: "1",
       fullName: "John Doe",
       date: "2024-01-12",
-      price: "200",
-      ticketName: "FanZone",
+      commission: "$20",
+      parcelType: "Document",
       trxId: "123456789",
     },
     {
       key: "2",
       fullName: "Sarah Smith",
       date: "2024-02-18",
-      price: "350",
-      ticketName: "VIP",
+      commission: "$35",
+      parcelType: "Small Box",
       trxId: "987654321",
     },
     {
       key: "3",
       fullName: "Michael Brown",
       date: "2024-03-05",
-      price: "150",
-      ticketName: "Regular",
+      commission: "$15",
+      parcelType: "Envelope",
       trxId: "456789123",
     },
     {
       key: "4",
       fullName: "Emily Johnson",
       date: "2024-04-22",
-      price: "400",
-      ticketName: "Premium",
+      commission: "$40",
+      parcelType: "Large Box",
       trxId: "654321987",
     },
     {
       key: "5",
       fullName: "David Wilson",
       date: "2024-05-11",
-      price: "250",
-      ticketName: "FanZone",
+      commission: "$25",
+      parcelType: "Fragile",
       trxId: "112233445",
     },
     {
       key: "6",
       fullName: "Sophia Davis",
       date: "2024-06-30",
-      price: "300",
-      ticketName: "VIP",
+      commission: "$30",
+      parcelType: "Standard",
       trxId: "778899001",
     },
     {
       key: "7",
       fullName: "James Miller",
       date: "2024-07-19",
-      price: "180",
-      ticketName: "Regular",
+      commission: "$18",
+      parcelType: "Document",
       trxId: "998877665",
     },
     {
       key: "8",
       fullName: "Olivia Taylor",
       date: "2024-08-27",
-      price: "420",
-      ticketName: "Premium",
+      commission: "$42",
+      parcelType: "Heavy Cargo",
       trxId: "556677889",
     },
     {
       key: "9",
       fullName: "Daniel Anderson",
       date: "2024-09-14",
-      price: "220",
-      ticketName: "FanZone",
+      commission: "$22",
+      parcelType: "Standard",
       trxId: "334455667",
     },
     {
       key: "10",
       fullName: "Ava Thomas",
       date: "2024-10-03",
-      price: "500",
-      ticketName: "VIP",
+      commission: "$50",
+      parcelType: "Express",
       trxId: "221133445",
     },
     {
       key: "11",
       fullName: "William Jackson",
       date: "2024-11-29",
-      price: "160",
-      ticketName: "Regular",
+      commission: "$16",
+      parcelType: "Envelope",
       trxId: "889900112",
     },
   ]);
@@ -153,8 +143,8 @@ function EarningsTable() {
       ),
     },
     { title: "Date", dataIndex: "date", key: "date" },
-    { title: "Price", dataIndex: "price", key: "price" },
-    { title: "Ticket Name", dataIndex: "ticketName", key: "ticketName" },
+    { title: "Commission", dataIndex: "commission", key: "commission" },
+    { title: "Parcel Type", dataIndex: "parcelType", key: "parcelType" },
     { title: "Trx ID", dataIndex: "trxId", key: "trxId" },
     {
       title: "Action",
@@ -239,12 +229,12 @@ function EarningsTable() {
               {/* Details */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-white border border-gray-200 p-4 rounded-xl shadow-sm">
-                  <div className="text-gray-600 text-sm">Price</div>
-                  <div className="text-lg font-semibold">{selectedUser.price}</div>
+                  <div className="text-gray-600 text-sm">Commission</div>
+                  <div className="text-lg font-semibold">{selectedUser.commission}</div>
                 </div>
                 <div className="bg-white border border-gray-200 p-4 rounded-xl shadow-sm">
-                  <div className="text-gray-600 text-sm">Ticket Name</div>
-                  <div className="text-lg font-semibold">{selectedUser.ticketName}</div>
+                  <div className="text-gray-600 text-sm">Parcel Type</div>
+                  <div className="text-lg font-semibold">{selectedUser.parcelType}</div>
                 </div>
                 <div className="bg-white border border-gray-200 p-4 rounded-xl shadow-sm">
                   <div className="text-gray-600 text-sm">Trx ID</div>

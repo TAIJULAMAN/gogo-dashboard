@@ -23,93 +23,83 @@ function ListingTable() {
     const [dataSource] = useState([
         {
             key: "1",
-            name: "GreenStay Villa",
+            name: "John Doe",
             date: "2025-11-27",
             type: "Apartment",
-            status: "Verified",
+            status: "Completed",
             location: "Miami Beach, Florida",
-            image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=300&fit=crop",
         },
         {
             key: "2",
-            name: "Sunset Crest Resort",
+            name: "Sarah Smith",
             date: "2025-10-02",
             type: "Resort",
-            status: "Pending",
+            status: "Cancelled",
             location: "Los Angeles, California",
-            image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop",
         },
         {
             key: "3",
-            name: "UrbanNest Suites",
+            name: "Michael Brown",
             date: "2025-09-18",
             type: "Hotel",
-            status: "Verified",
+            status: "Completed",
             location: "Chicago, Illinois",
-            image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&h=300&fit=crop",
         },
         {
             key: "4",
-            name: "PalmLeaf Residency",
+            name: "Emily Johnson",
             date: "2025-08-12",
             type: "Villa",
-            status: "Verified",
+            status: "Completed",
             location: "Orlando, Florida",
-            image: "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=400&h=300&fit=crop",
         },
         {
             key: "5",
-            name: "LuxeBay Apartments",
+            name: "David Wilson",
             date: "2025-07-21",
             type: "Apartment",
-            status: "Verified",
+            status: "Completed",
             location: "San Diego, California",
-            image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&h=300&fit=crop",
         },
         {
             key: "6",
-            name: "Evergreen Hills Lodge",
+            name: "Sophia Davis",
             date: "2025-06-30",
             type: "Lodge",
-            status: "Pending",
+            status: "Completed",
             location: "Denver, Colorado",
-            image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=300&fit=crop",
         },
         {
             key: "7",
-            name: "BlueWater Harmony Stay",
+            name: "James Miller",
             date: "2025-05-14",
             type: "Resort",
-            status: "Verified",
+            status: "Completed",
             location: "Honolulu, Hawaii",
-            image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400&h=300&fit=crop",
         },
         {
             key: "8",
-            name: "PeakView Cabin",
+            name: "Olivia Taylor",
             date: "2025-04-29",
             type: "Cabin",
-            status: "Verified",
+            status: "Completed",
             location: "Aspen, Colorado",
-            image: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=400&h=300&fit=crop",
         },
         {
             key: "9",
-            name: "Skyline Tower Suites",
+            name: "Daniel Anderson",
             date: "2025-03-15",
             type: "Hotel",
-            status: "Pending",
+            status: "Completed",
             location: "New York, New York",
-            image: "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop",
         },
         {
             key: "10",
-            name: "Coastal Breeze Villa",
+            name: "Ava Thomas",
             date: "2025-02-08",
             type: "Villa",
-            status: "Verified",
+            status: "Completed",
             location: "Santa Monica, California",
-            image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&h=300&fit=crop",
         },
     ]);
 
@@ -134,38 +124,30 @@ function ListingTable() {
             width: 100,
             render: (_, record) => (
                 <img
-                    src={record.image}
-                    className="w-16 h-12 object-cover rounded-lg"
+                    src="/avatar.png"
+                    className="w-12 h-12 object-cover rounded-full"
                     alt={record.name}
                 />
             ),
         },
         {
-            title: "Name",
+            title: "Customer Name",
             dataIndex: "name",
             key: "name",
             render: (value) => <span className="font-semibold">{value}</span>,
         },
         { title: "Date", dataIndex: "date", key: "date" },
         {
-            title: "Type",
-            dataIndex: "type",
-            key: "type",
-            render: (type) => (
-                <span className="px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-700">
-                    {type}
-                </span>
-            ),
-        },
-        {
             title: "Status",
             dataIndex: "status",
             key: "status",
             render: (status) => (
                 <span
-                    className={`px-3 py-1 rounded-full text-sm font-semibold ${status === "Verified"
+                    className={`px-3 py-1 rounded-full text-sm font-semibold ${status === "Completed"
                         ? "bg-green-100 text-green-700"
-                        : "bg-yellow-100 text-yellow-700"
+                        : status === "Cancelled"
+                            ? "bg-red-100 text-red-700"
+                            : "bg-yellow-100 text-yellow-700"
                         }`}
                 >
                     {status}
@@ -201,24 +183,7 @@ function ListingTable() {
                     <IoSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
                 </div>
                 <div className="flex gap-3 w-full md:w-auto">
-                    <Select
-                        placeholder="Filter by Type"
-                        value={typeFilter}
-                        onChange={setTypeFilter}
-                        allowClear
-                        className="w-full md:w-48"
-                        size="large"
-                        popupMatchSelectWidth={false}
-                        dropdownStyle={{ paddingTop: 8, paddingBottom: 8 }}
-                        options={[
-                            { label: "Apartment", value: "Apartment" },
-                            { label: "Resort", value: "Resort" },
-                            { label: "Hotel", value: "Hotel" },
-                            { label: "Villa", value: "Villa" },
-                            { label: "Lodge", value: "Lodge" },
-                            { label: "Cabin", value: "Cabin" },
-                        ]}
-                    />
+
                     <Select
                         placeholder="Filter by Status"
                         value={statusFilter}
@@ -229,8 +194,8 @@ function ListingTable() {
                         popupMatchSelectWidth={false}
                         dropdownStyle={{ paddingTop: 8, paddingBottom: 8 }}
                         options={[
-                            { label: "Verified", value: "Verified" },
-                            { label: "Pending", value: "Pending" },
+                            { label: "Completed", value: "Completed" },
+                            { label: "Cancelled", value: "Cancelled" },
                         ]}
                     />
                 </div>

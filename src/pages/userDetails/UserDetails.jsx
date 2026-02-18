@@ -1,27 +1,20 @@
 import { ConfigProvider, Modal, Table, Select } from "antd";
 import { useMemo, useState } from "react";
-import { IoSearch, IoChevronBack, IoAddOutline } from "react-icons/io5";
+import { IoSearch, IoChevronBack } from "react-icons/io5";
 import { MdBlock } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import { FaRegEye } from "react-icons/fa";
 
 function UserDetails() {
   const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(false); // block modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-  const [isEditOpen, setIsEditOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [editUser, setEditUser] = useState(null);
   const [roleFilter, setRoleFilter] = useState();
   const [searchQuery, setSearchQuery] = useState("");
   const handleCancel = () => {
     setIsModalOpen(false);
   };
 
-  const showViewModal = (user) => {
-    setSelectedUser(user);
-    setIsViewModalOpen(true);
-  };
   const handleViewCancel = () => {
     setIsViewModalOpen(false);
     setSelectedUser(null);
@@ -30,7 +23,7 @@ function UserDetails() {
     {
       key: "1",
       fullName: "John Doe",
-      role: "Host",
+      role: "User",
       clinic: "Downtown Dental Clinic",
       email: "john@example.com",
       phone: "+1 987 654 3210",
@@ -39,7 +32,7 @@ function UserDetails() {
     {
       key: "2",
       fullName: "Emma Smith",
-      role: "Influencer",
+      role: "Rider",
       clinic: "Smile Care Clinic",
       email: "emma@example.com",
       phone: "+1 987 654 3211",
@@ -48,7 +41,7 @@ function UserDetails() {
     {
       key: "3",
       fullName: "Liam Johnson",
-      role: "Host",
+      role: "User",
       clinic: "Healthy Teeth Clinic",
       email: "liam@example.com",
       phone: "+1 987 654 3212",
@@ -57,7 +50,7 @@ function UserDetails() {
     {
       key: "4",
       fullName: "Olivia Brown",
-      role: "Influencer",
+      role: "Rider",
       clinic: "City Dental Center",
       email: "olivia@example.com",
       phone: "+1 987 654 3213",
@@ -66,7 +59,7 @@ function UserDetails() {
     {
       key: "5",
       fullName: "Noah Davis",
-      role: "Host",
+      role: "User",
       clinic: "Prime Smiles",
       email: "noah@example.com",
       phone: "+1 987 654 3214",
@@ -75,7 +68,7 @@ function UserDetails() {
     {
       key: "6",
       fullName: "Sophia Miller",
-      role: "Influencer",
+      role: "Rider",
       clinic: "Bright Smile Hub",
       email: "sophia@example.com",
       phone: "+1 987 654 3215",
@@ -84,7 +77,7 @@ function UserDetails() {
     {
       key: "7",
       fullName: "James Wilson",
-      role: "Influencer",
+      role: "Rider",
       clinic: "Downtown Dental Clinic",
       email: "james@example.com",
       phone: "+1 987 654 3216",
@@ -93,7 +86,7 @@ function UserDetails() {
     {
       key: "8",
       fullName: "Isabella Moore",
-      role: "Influencer",
+      role: "Rider",
       clinic: "Healthy Teeth Clinic",
       email: "isabella@example.com",
       phone: "+1 987 654 3217",
@@ -102,7 +95,7 @@ function UserDetails() {
     {
       key: "9",
       fullName: "Benjamin Taylor",
-      role: "Host",
+      role: "User",
       clinic: "Prime Smiles",
       email: "benjamin@example.com",
       phone: "+1 987 654 3218",
@@ -111,7 +104,7 @@ function UserDetails() {
     {
       key: "10",
       fullName: "Mia Anderson",
-      role: "Host",
+      role: "User",
       clinic: "City Dental Center",
       email: "mia@example.com",
       phone: "+1 987 654 3219",
@@ -132,7 +125,7 @@ function UserDetails() {
       render: (value, record) => (
         <div className="flex items-center gap-3">
           <img
-            src={`https://avatar.iran.liara.run/public/${record.key}`}
+            src={`/avatar.png`}
             className="w-10 h-10 object-cover rounded-full"
             alt="User Avatar"
           />
@@ -148,12 +141,9 @@ function UserDetails() {
       title: "Action",
       key: "action",
       render: (_, record) => (
-        <div className="flex gap-2">
+        <div className="">
           <button className="" onClick={() => openBlock(record)}>
             <MdBlock className="text-red-500 w-5 h-5 cursor-pointer" />
-          </button>
-          <button onClick={() => showViewModal(record)}>
-            <FaRegEye className="text-blue-500 w-5 h-5 cursor-pointer" />
           </button>
         </div>
       ),
@@ -238,8 +228,8 @@ function UserDetails() {
               popupMatchSelectWidth={false}
               dropdownStyle={{ paddingTop: 8, paddingBottom: 8 }}
               options={[
-                { label: "Host", value: "Host" },
-                { label: "Influencer", value: "Influencer" },
+                { label: "User", value: "User" },
+                { label: "Rider", value: "Rider" },
                 { label: "Blocked Users", value: "Blocked" },
               ]}
             />

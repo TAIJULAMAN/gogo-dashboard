@@ -33,13 +33,13 @@ const MainHeader = ({ toggleSidebar }) => {
               className="flex items-center gap-2 cursor-default"
             >
               <img
-                src="https://avatar.iran.liara.run/public/31"
+                src="/avatar.png"
                 className="w-8 md:w-12 h-8 md:h-12 object-cover rounded-full ring-2 ring-primary/50"
                 alt="User Avatar"
               />
               <div>
                 <h3 className="hidden md:block text-[#0D0D0D] text-lg font-semibold">
-                  Mr. Admin
+                  Shah Aman
                 </h3>
                 <p className="text-primary-dark text-sm font-medium">Admin</p>
               </div>
