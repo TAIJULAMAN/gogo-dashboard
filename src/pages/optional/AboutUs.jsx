@@ -11,7 +11,7 @@ function AboutUs() {
   const navigate = useNavigate();
 
   return (
-    <div className="p-5">
+    <div>
       <div className="bg-[#2D8C3C] px-5 py-3 rounded-md mb-3 flex items-center gap-3">
         <button
           onClick={() => navigate(-1)}

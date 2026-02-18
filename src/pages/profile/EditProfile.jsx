@@ -1,6 +1,6 @@
 function EditProfile() {
   return (
-    <div className="w-full flex justify-center items-center p-4">
+    <div className="w-full flex justify-center items-center">
       <div className="bg-white w-full max-w-xl px-4 sm:px-6 md:px-8 py-5 rounded-md border border-gray-200 shadow-sm">
         <p className="text-[#2D8C3C] text-center font-bold text-xl sm:text-2xl mb-5">
           Edit Your Profile
@@ -33,7 +33,7 @@ function EditProfile() {
           </div>
 
           <div>
-            <label className="text-sm md:text-base text-[#0D0D0D] mb-2 font-semibold block">
+            <label className="text-sm md:text-base text-[#2D8C3C] mb-2 font-semibold block">
               Contact Number
             </label>
             <input
