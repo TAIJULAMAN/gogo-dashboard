@@ -1,81 +1,183 @@
-import { ConfigProvider, Modal, Table, Select } from "antd";
+import { ConfigProvider, Modal, Table, Select, Tag } from "antd";
 import { useMemo, useState } from "react";
 import { IoSearch, IoChevronBack } from "react-icons/io5";
 import { MdBlock, MdCheckCircle } from "react-icons/md";
-import { FaRegEye } from "react-icons/fa";
+import { FaRegEye, FaMotorcycle } from "react-icons/fa";
 import { LuUsers } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 
+const initialRiders = [
+  {
+    key: "1",
+    fullName: "Carlos Rivera",
+    email: "carlos@example.com",
+    phone: "+1 555 100 0001",
+    vehicle: "Motorcycle",
+    plateNo: "RDR-1001",
+    joined: "2024-01-08",
+    totalDeliveries: 312,
+    status: "Active",
+  },
+  {
+    key: "2",
+    fullName: "Aisha Patel",
+    email: "aisha@example.com",
+    phone: "+1 555 100 0002",
+    vehicle: "Bicycle",
+    plateNo: "RDR-1002",
+    joined: "2024-02-14",
+    totalDeliveries: 89,
+    status: "Pending",
+  },
+  {
+    key: "3",
+    fullName: "Marcus Lee",
+    email: "marcus@example.com",
+    phone: "+1 555 100 0003",
+    vehicle: "Scooter",
+    plateNo: "RDR-1003",
+    joined: "2024-03-21",
+    totalDeliveries: 456,
+    status: "Active",
+  },
+  {
+    key: "4",
+    fullName: "Fatima Nour",
+    email: "fatima@example.com",
+    phone: "+1 555 100 0004",
+    vehicle: "Motorcycle",
+    plateNo: "RDR-1004",
+    joined: "2024-04-05",
+    totalDeliveries: 203,
+    status: "Blocked",
+  },
+  {
+    key: "5",
+    fullName: "Jake Thompson",
+    email: "jake@example.com",
+    phone: "+1 555 100 0005",
+    vehicle: "Car",
+    plateNo: "RDR-1005",
+    joined: "2024-05-17",
+    totalDeliveries: 128,
+    status: "Active",
+  },
+  {
+    key: "6",
+    fullName: "Lily Chen",
+    email: "lily@example.com",
+    phone: "+1 555 100 0006",
+    vehicle: "Scooter",
+    plateNo: "RDR-1006",
+    joined: "2024-06-29",
+    totalDeliveries: 67,
+    status: "Pending",
+  },
+  {
+    key: "7",
+    fullName: "Omar Hassan",
+    email: "omar@example.com",
+    phone: "+1 555 100 0007",
+    vehicle: "Bicycle",
+    plateNo: "RDR-1007",
+    joined: "2024-07-11",
+    totalDeliveries: 534,
+    status: "Active",
+  },
+  {
+    key: "8",
+    fullName: "Priya Sharma",
+    email: "priya@example.com",
+    phone: "+1 555 100 0008",
+    vehicle: "Motorcycle",
+    plateNo: "RDR-1008",
+    joined: "2024-08-23",
+    totalDeliveries: 291,
+    status: "Active",
+  },
+  {
+    key: "9",
+    fullName: "Ethan Brooks",
+    email: "ethan@example.com",
+    phone: "+1 555 100 0009",
+    vehicle: "Car",
+    plateNo: "RDR-1009",
+    joined: "2024-09-09",
+    totalDeliveries: 175,
+    status: "Blocked",
+  },
+  {
+    key: "10",
+    fullName: "Sofia Ramirez",
+    email: "sofia@example.com",
+    phone: "+1 555 100 0010",
+    vehicle: "Scooter",
+    plateNo: "RDR-1010",
+    joined: "2024-10-30",
+    totalDeliveries: 44,
+    status: "Pending",
+  },
+];
+
 const statusColor = {
-  Active:  { bg: "bg-green-100",  text: "text-green-700"  },
+  Active: { bg: "bg-green-100", text: "text-green-700" },
   Pending: { bg: "bg-yellow-100", text: "text-yellow-700" },
-  Blocked: { bg: "bg-red-100",    text: "text-red-700"    },
+  Blocked: { bg: "bg-red-100", text: "text-red-700" },
 };
 
-function UserDetails() {
+function RiderManagement() {
   const navigate = useNavigate();
-
-  const [dataSource, setDataSource] = useState([
-    { key: "1",  fullName: "John Doe",        role: "User",  email: "john@example.com",     phone: "+1 987 654 3210", joined: "2024-01-12", status: "Active"  },
-    { key: "2",  fullName: "Emma Smith",       role: "Rider", email: "emma@example.com",     phone: "+1 987 654 3211", joined: "2024-03-28", status: "Pending" },
-    { key: "3",  fullName: "Liam Johnson",     role: "User",  email: "liam@example.com",     phone: "+1 987 654 3212", joined: "2024-06-15", status: "Active"  },
-    { key: "4",  fullName: "Olivia Brown",     role: "Rider", email: "olivia@example.com",   phone: "+1 987 654 3213", joined: "2024-08-02", status: "Blocked" },
-    { key: "5",  fullName: "Noah Davis",       role: "User",  email: "noah@example.com",     phone: "+1 987 654 3214", joined: "2024-09-10", status: "Active"  },
-    { key: "6",  fullName: "Sophia Miller",    role: "Rider", email: "sophia@example.com",   phone: "+1 987 654 3215", joined: "2024-11-19", status: "Pending" },
-    { key: "7",  fullName: "James Wilson",     role: "Rider", email: "james@example.com",    phone: "+1 987 654 3216", joined: "2025-01-05", status: "Active"  },
-    { key: "8",  fullName: "Isabella Moore",   role: "Rider", email: "isabella@example.com", phone: "+1 987 654 3217", joined: "2025-02-21", status: "Active"  },
-    { key: "9",  fullName: "Benjamin Taylor",  role: "User",  email: "benjamin@example.com", phone: "+1 987 654 3218", joined: "2025-03-03", status: "Blocked" },
-    { key: "10", fullName: "Mia Anderson",     role: "User",  email: "mia@example.com",      phone: "+1 987 654 3219", joined: "2025-04-12", status: "Active"  },
-  ]);
-
-  const [searchQuery, setSearchQuery]   = useState("");
+  const [dataSource, setDataSource] = useState(initialRiders);
+  const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState(undefined);
+  const [vehicleFilter, setVehicleFilter] = useState(undefined);
 
   // Modals
-  const [viewUser, setViewUser]       = useState(null);
-  const [blockUser, setBlockUser]     = useState(null);
-  const [approveUser, setApproveUser] = useState(null);
+  const [viewRider, setViewRider] = useState(null);
+  const [blockRider, setBlockRider] = useState(null);
+  const [approveRider, setApproveRider] = useState(null);
 
   // ─── Stats ───────────────────────────────────────
-  const totalUsers   = dataSource.length;
-  const activeUsers  = dataSource.filter((r) => r.status === "Active").length;
-  const pendingUsers = dataSource.filter((r) => r.status === "Pending").length;
-  const blockedUsers = dataSource.filter((r) => r.status === "Blocked").length;
+  const totalRiders = dataSource.length;
+  const activeRiders = dataSource.filter((r) => r.status === "Active").length;
+  const pendingRiders = dataSource.filter((r) => r.status === "Pending").length;
+  const blockedRiders = dataSource.filter((r) => r.status === "Blocked").length;
 
   // ─── Filter ──────────────────────────────────────
   const filteredData = useMemo(() => {
     const q = (searchQuery || "").toLowerCase().trim();
     return dataSource.filter((r) => {
       const matchStatus = statusFilter ? r.status === statusFilter : true;
+      const matchVehicle = vehicleFilter ? r.vehicle === vehicleFilter : true;
       const matchQuery = q
-        ? [r.fullName, r.email, r.phone, r.role, r.status]
+        ? [r.fullName, r.email, r.phone, r.vehicle, r.plateNo, r.status]
             .filter(Boolean)
             .some((v) => String(v).toLowerCase().includes(q))
         : true;
-      return matchStatus && matchQuery;
+      return matchStatus && matchVehicle && matchQuery;
     });
-  }, [dataSource, statusFilter, searchQuery]);
+  }, [dataSource, statusFilter, vehicleFilter, searchQuery]);
 
   // ─── Block / Unblock ─────────────────────────────
   const confirmBlockToggle = () => {
     setDataSource((prev) =>
       prev.map((r) =>
-        r.key === blockUser.key
+        r.key === blockRider.key
           ? { ...r, status: r.status === "Blocked" ? "Active" : "Blocked" }
           : r
       )
     );
-    setBlockUser(null);
+    setBlockRider(null);
   };
 
-  // ─── Approve ─────────────────────────────────────
+  // ─── Approve Pending ─────────────────────────────
   const confirmApprove = () => {
     setDataSource((prev) =>
       prev.map((r) =>
-        r.key === approveUser.key ? { ...r, status: "Active" } : r
+        r.key === approveRider.key ? { ...r, status: "Active" } : r
       )
     );
-    setApproveUser(null);
+    setApproveRider(null);
   };
 
   // ─── Columns ─────────────────────────────────────
@@ -95,16 +197,17 @@ function UserDetails() {
           <img
             src={`/avatar.png`}
             className="w-10 h-10 object-cover rounded-full"
-            alt="User Avatar"
+            alt="Rider Avatar"
           />
           <span className="font-semibold leading-none">{value}</span>
         </div>
       ),
     },
-    { title: "Role",      dataIndex: "role",   key: "role"  },
-    { title: "Email",     dataIndex: "email",  key: "email" },
-    { title: "Phone No",  dataIndex: "phone",  key: "phone" },
-    { title: "Joined Date", dataIndex: "joined", key: "joined" },
+    { title: "Email", dataIndex: "email", key: "email" },
+    { title: "Phone", dataIndex: "phone", key: "phone" },
+    { title: "Vehicle", dataIndex: "vehicle", key: "vehicle" },
+    { title: "Plate No", dataIndex: "plateNo", key: "plateNo" },
+    { title: "Deliveries", dataIndex: "totalDeliveries", key: "totalDeliveries", align: "center" },
     {
       title: "Status",
       dataIndex: "status",
@@ -124,20 +227,17 @@ function UserDetails() {
       render: (_, record) => (
         <div className="flex items-center gap-3">
           {/* View */}
-          <button onClick={() => setViewUser(record)} title="View Details">
+          <button onClick={() => setViewRider(record)} title="View Details">
             <FaRegEye className="text-blue-500 w-5 h-5 cursor-pointer hover:text-blue-700 transition-colors" />
           </button>
-          {/* Approve — only for Pending */}
+          {/* Approve (only for Pending) */}
           {record.status === "Pending" && (
-            <button onClick={() => setApproveUser(record)} title="Approve User">
+            <button onClick={() => setApproveRider(record)} title="Approve Rider">
               <MdCheckCircle className="text-green-500 w-5 h-5 cursor-pointer hover:text-green-700 transition-colors" />
             </button>
           )}
           {/* Block / Unblock */}
-          <button
-            onClick={() => setBlockUser(record)}
-            title={record.status === "Blocked" ? "Unblock" : "Block"}
-          >
+          <button onClick={() => setBlockRider(record)} title={record.status === "Blocked" ? "Unblock" : "Block"}>
             <MdBlock
               className={`w-5 h-5 cursor-pointer transition-colors ${
                 record.status === "Blocked"
@@ -154,7 +254,7 @@ function UserDetails() {
   return (
     <div>
       {/* ── Page Header ── */}
-      <div className="bg-[#2D8C3C] px-4 md:px-5 py-3 rounded-md mb-3 flex flex-wrap md:flex-nowrap items-start md:items-center gap-2 md:gap-3">
+      <div className="bg-[#2D8C3C] px-4 md:px-5 py-3 rounded-md mb-5 flex flex-wrap md:flex-nowrap items-start md:items-center gap-2 md:gap-3">
         <button
           onClick={() => navigate(-1)}
           className="text-white hover:opacity-90 transition"
@@ -162,7 +262,7 @@ function UserDetails() {
         >
           <IoChevronBack className="w-6 h-6" />
         </button>
-        <h1 className="text-white text-xl sm:text-2xl font-bold">User Management</h1>
+        <h1 className="text-white text-xl sm:text-2xl font-bold">Rider Management</h1>
 
         {/* Mobile search */}
         <div className="relative w-full md:hidden mt-1">
@@ -170,20 +270,20 @@ function UserDetails() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search users..."
+            placeholder="Search riders..."
             className="w-full bg-white text-[#0D0D0D] placeholder-gray-500 pl-10 pr-3 py-2 rounded-md focus:outline-none"
           />
           <IoSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
         </div>
 
-        <div className="ml-0 md:ml-auto flex items-center gap-2 w-full md:w-auto mt-2 md:mt-0">
+        <div className="ml-0 md:ml-auto flex flex-wrap items-center gap-2 w-full md:w-auto mt-2 md:mt-0">
           {/* Desktop search */}
           <div className="relative hidden md:block">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search users..."
+              placeholder="Search riders..."
               className="bg-white text-[#0D0D0D] placeholder-[#2D8C3C] pl-10 pr-3 py-2 rounded-md focus:outline-none"
             />
             <IoSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-[#2D8C3C]" />
@@ -207,11 +307,25 @@ function UserDetails() {
               onChange={setStatusFilter}
               allowClear
               size="large"
-              style={{ minWidth: 180 }}
+              style={{ minWidth: 160 }}
               options={[
-                { label: "Active",  value: "Active"  },
+                { label: "Active", value: "Active" },
                 { label: "Pending", value: "Pending" },
                 { label: "Blocked", value: "Blocked" },
+              ]}
+            />
+            <Select
+              placeholder="Filter by Vehicle"
+              value={vehicleFilter}
+              onChange={setVehicleFilter}
+              allowClear
+              size="large"
+              style={{ minWidth: 160 }}
+              options={[
+                { label: "Motorcycle", value: "Motorcycle" },
+                { label: "Scooter", value: "Scooter" },
+                { label: "Bicycle", value: "Bicycle" },
+                { label: "Car", value: "Car" },
               ]}
             />
           </ConfigProvider>
@@ -219,12 +333,12 @@ function UserDetails() {
       </div>
 
       {/* ── Stats Cards ── */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 mt-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         {[
-          { label: "All Users", value: totalUsers,   icon: LuUsers,  color: "text-[#2D8C3C]",  bg: "bg-green-50"  },
-          { label: "Active",    value: activeUsers,  icon: LuUsers,  color: "text-green-600",   bg: "bg-green-50"  },
-          { label: "Pending",   value: pendingUsers, icon: LuUsers,  color: "text-yellow-600",  bg: "bg-yellow-50" },
-          { label: "Blocked",   value: blockedUsers, icon: MdBlock,  color: "text-red-500",     bg: "bg-red-50"    },
+          { label: "Total Riders", value: totalRiders, icon: FaMotorcycle, color: "text-[#2D8C3C]", bg: "bg-green-50" },
+          { label: "Active", value: activeRiders, icon: LuUsers, color: "text-green-600", bg: "bg-green-50" },
+          { label: "Pending", value: pendingRiders, icon: LuUsers, color: "text-yellow-600", bg: "bg-yellow-50" },
+          { label: "Blocked", value: blockedRiders, icon: MdBlock, color: "text-red-500", bg: "bg-red-50" },
         ].map(({ label, value, icon: Icon, color, bg }) => (
           <div key={label} className={`flex flex-col justify-center items-center p-6 ${bg} rounded-xl gap-1 shadow-sm`}>
             <Icon className={`w-8 h-8 ${color} mb-1`} />
@@ -264,41 +378,37 @@ function UserDetails() {
       </ConfigProvider>
 
       {/* ── View Modal ── */}
-      <Modal open={!!viewUser} centered onCancel={() => setViewUser(null)} footer={null} width={620}>
-        {viewUser && (
+      <Modal open={!!viewRider} centered onCancel={() => setViewRider(null)} footer={null} width={620}>
+        {viewRider && (
           <div>
             <div className="bg-gradient-to-r from-[#2D8C3C] to-[#3aad50] p-6 -m-6 mb-6 rounded-t-lg">
               <div className="flex items-center gap-5">
                 <img
-                  src={`https://avatar.iran.liara.run/public/${viewUser.key}`}
-                  alt={viewUser.fullName}
+                  src={`https://avatar.iran.liara.run/public/${viewRider.key}`}
+                  alt={viewRider.fullName}
                   className="w-20 h-20 rounded-full border-4 border-white shadow-lg object-cover"
                 />
                 <div className="text-white">
-                  <h2 className="text-2xl font-bold mb-1">{viewUser.fullName}</h2>
-                  <div className="flex items-center gap-2">
-                    <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium">
-                      {viewUser.role}
-                    </span>
-                    <span
-                      className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                        statusColor[viewUser.status]?.bg ?? "bg-gray-100"
-                      } ${statusColor[viewUser.status]?.text ?? "text-gray-700"}`}
-                    >
-                      {viewUser.status}
-                    </span>
-                  </div>
+                  <h2 className="text-2xl font-bold mb-1">{viewRider.fullName}</h2>
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                      statusColor[viewRider.status]?.bg ?? "bg-gray-100"
+                    } ${statusColor[viewRider.status]?.text ?? "text-gray-700"}`}
+                  >
+                    {viewRider.status}
+                  </span>
                 </div>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[
-                ["Email",       viewUser.email  ],
-                ["Phone No",    viewUser.phone  ],
-                ["Role",        viewUser.role   ],
-                ["Joined Date", viewUser.joined ],
-                ["Status",      viewUser.status ],
+                ["Email", viewRider.email],
+                ["Phone", viewRider.phone],
+                ["Vehicle Type", viewRider.vehicle],
+                ["Plate Number", viewRider.plateNo],
+                ["Total Deliveries", viewRider.totalDeliveries],
+                ["Joined Date", viewRider.joined],
               ].map(([label, val]) => (
                 <div key={label} className="bg-white border border-gray-200 p-4 rounded-xl shadow-sm">
                   <div className="text-gray-500 text-sm mb-1">{label}</div>
@@ -309,7 +419,7 @@ function UserDetails() {
 
             <div className="flex justify-end mt-6 pt-4 border-t border-gray-200">
               <button
-                onClick={() => setViewUser(null)}
+                onClick={() => setViewRider(null)}
                 className="bg-gray-500 text-white font-semibold px-8 py-2 rounded-lg hover:bg-gray-600 transition-colors"
               >
                 Close
@@ -320,24 +430,20 @@ function UserDetails() {
       </Modal>
 
       {/* ── Block / Unblock Modal ── */}
-      <Modal open={!!blockUser} centered onCancel={() => setBlockUser(null)} footer={null}>
+      <Modal open={!!blockRider} centered onCancel={() => setBlockRider(null)} footer={null}>
         <div className="flex flex-col justify-center items-center py-8">
-          <MdBlock
-            className={`w-14 h-14 mb-4 ${
-              blockUser?.status === "Blocked" ? "text-gray-400" : "text-red-500"
-            }`}
-          />
+          <MdBlock className={`w-14 h-14 mb-4 ${blockRider?.status === "Blocked" ? "text-gray-400" : "text-red-500"}`} />
           <h2 className="text-2xl font-bold text-center text-[#2D8C3C] mb-2">
-            {blockUser?.status === "Blocked" ? "Unblock User" : "Block User"}
+            {blockRider?.status === "Blocked" ? "Unblock Rider" : "Block Rider"}
           </h2>
           <p className="text-base text-center text-gray-600 mb-6">
-            {blockUser?.status === "Blocked"
-              ? `Do you want to unblock ${blockUser?.fullName}?`
-              : `Do you want to block ${blockUser?.fullName}?`}
+            {blockRider?.status === "Blocked"
+              ? `Do you want to unblock ${blockRider?.fullName}?`
+              : `Do you want to block ${blockRider?.fullName}?`}
           </p>
           <div className="flex gap-3">
             <button
-              onClick={() => setBlockUser(null)}
+              onClick={() => setBlockRider(null)}
               className="bg-gray-200 text-gray-700 font-semibold py-2 px-6 rounded-lg hover:bg-gray-300 transition-colors"
             >
               Cancel
@@ -345,28 +451,28 @@ function UserDetails() {
             <button
               onClick={confirmBlockToggle}
               className={`text-white font-semibold py-2 px-6 rounded-lg transition-colors ${
-                blockUser?.status === "Blocked"
+                blockRider?.status === "Blocked"
                   ? "bg-[#2D8C3C] hover:bg-[#256a2f]"
                   : "bg-red-500 hover:bg-red-700"
               }`}
             >
-              {blockUser?.status === "Blocked" ? "Unblock" : "Block"}
+              {blockRider?.status === "Blocked" ? "Unblock" : "Block"}
             </button>
           </div>
         </div>
       </Modal>
 
       {/* ── Approve Modal ── */}
-      <Modal open={!!approveUser} centered onCancel={() => setApproveUser(null)} footer={null}>
+      <Modal open={!!approveRider} centered onCancel={() => setApproveRider(null)} footer={null}>
         <div className="flex flex-col justify-center items-center py-8">
           <MdCheckCircle className="w-14 h-14 mb-4 text-green-500" />
-          <h2 className="text-2xl font-bold text-center text-[#2D8C3C] mb-2">Approve User</h2>
+          <h2 className="text-2xl font-bold text-center text-[#2D8C3C] mb-2">Approve Rider</h2>
           <p className="text-base text-center text-gray-600 mb-6">
-            Approve <span className="font-semibold">{approveUser?.fullName}</span> as an active user?
+            Approve <span className="font-semibold">{approveRider?.fullName}</span> as an active rider?
           </p>
           <div className="flex gap-3">
             <button
-              onClick={() => setApproveUser(null)}
+              onClick={() => setApproveRider(null)}
               className="bg-gray-200 text-gray-700 font-semibold py-2 px-6 rounded-lg hover:bg-gray-300 transition-colors"
             >
               Cancel
@@ -384,4 +490,4 @@ function UserDetails() {
   );
 }
 
-export default UserDetails;
+export default RiderManagement;

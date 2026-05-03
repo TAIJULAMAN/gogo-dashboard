@@ -9,10 +9,12 @@ import {
   MdList,
   MdLocalOffer,
 } from "react-icons/md";
+import { FaMotorcycle } from "react-icons/fa";
 
 const navItems = [
   { path: "/", label: "Dashboard", icon: RxDashboard },
   { path: "/user-details", label: "User Management", icon: LuUsers },
+  { path: "/rider-management", label: "Rider Management", icon: FaMotorcycle },
   { path: "/earnings", label: "Earnings", icon: MdOutlineInventory2 },
   { path: "/order-management", label: "Order Management", icon: MdList },
   { path: "/transactions", label: "Transactions", icon: MdLocalOffer },
