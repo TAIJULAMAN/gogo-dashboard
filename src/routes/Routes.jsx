@@ -16,7 +16,6 @@ import AboutUs from "../pages/optional/AboutUs";
 import EditProfile from "../pages/profile/EditProfile";
 import Earnings from "../pages/Earnings/Earnings";
 import Listing from "../pages/Listing/Listing";
-import Transactions from "../pages/Transactions/Transactions";
 import RiderManagement from "../pages/RiderManagement/RiderManagement";
 
 const router = createBrowserRouter([
@@ -64,10 +63,6 @@ const router = createBrowserRouter([
         element: <Listing />,
       },
 
-      {
-        path: "/transactions",
-        element: <Transactions />,
-      },
       {
         path: "/notifications",
         element: <Notifications />,

@@ -7,7 +7,6 @@ import { IoCloseSharp, IoLogOutOutline } from "react-icons/io5";
 import {
   MdOutlineInventory2,
   MdList,
-  MdLocalOffer,
 } from "react-icons/md";
 import { FaMotorcycle } from "react-icons/fa";
 
@@ -17,7 +16,6 @@ const navItems = [
   { path: "/rider-management", label: "Rider Management", icon: FaMotorcycle },
   { path: "/earnings", label: "Earnings", icon: MdOutlineInventory2 },
   { path: "/order-management", label: "Order Management", icon: MdList },
-  { path: "/transactions", label: "Transactions", icon: MdLocalOffer },
   { path: "/settings", label: "Settings", icon: IoMdSettings },
 ];
 
