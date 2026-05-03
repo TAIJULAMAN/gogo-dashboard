@@ -17,6 +17,7 @@ import EditProfile from "../pages/profile/EditProfile";
 import Earnings from "../pages/Earnings/Earnings";
 import Listing from "../pages/Listing/Listing";
 import RiderManagement from "../pages/RiderManagement/RiderManagement";
+import Parameter from "../pages/Parameter/Parameter";
 
 const router = createBrowserRouter([
   {
@@ -93,6 +94,10 @@ const router = createBrowserRouter([
       {
         path: "/about-us",
         element: <AboutUs />,
+      },
+      {
+        path: "/parameter",
+        element: <Parameter />,
       },
 
       {
