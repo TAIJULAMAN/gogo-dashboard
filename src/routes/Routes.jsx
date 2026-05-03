@@ -18,6 +18,7 @@ import Earnings from "../pages/Earnings/Earnings";
 import Listing from "../pages/Listing/Listing";
 import RiderManagement from "../pages/RiderManagement/RiderManagement";
 import Parameter from "../pages/Parameter/Parameter";
+import HotArea from "../pages/HotArea/HotArea";
 
 const router = createBrowserRouter([
   {
@@ -98,6 +99,10 @@ const router = createBrowserRouter([
       {
         path: "/parameter",
         element: <Parameter />,
+      },
+      {
+        path: "/hot-area",
+        element: <HotArea />,
       },
 
       {

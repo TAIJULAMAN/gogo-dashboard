@@ -9,7 +9,7 @@ import {
   MdList,
   MdTune,
 } from "react-icons/md";
-import { FaMotorcycle } from "react-icons/fa";
+import { FaMotorcycle, FaFireAlt } from "react-icons/fa";
 
 const navItems = [
   { path: "/", label: "Dashboard", icon: RxDashboard },
@@ -18,6 +18,7 @@ const navItems = [
   { path: "/earnings", label: "Earnings", icon: MdOutlineInventory2 },
   { path: "/order-management", label: "Order Management", icon: MdList },
   { path: "/parameter", label: "Parameter", icon: MdTune },
+  { path: "/hot-area", label: "Hot Area", icon: FaFireAlt },
   { path: "/settings", label: "Settings", icon: IoMdSettings },
 ];
 
