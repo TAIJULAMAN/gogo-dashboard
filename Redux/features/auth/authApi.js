@@ -4,9 +4,8 @@ const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     logIn: builder.mutation({
       query: (data) => {
-        // console.log("Data being sent to the API:", data);
         return {
-          url: "auth/login",
+          url: "auth/admin/login",
           method: "POST",
           body: data,
         };
@@ -15,7 +14,7 @@ const authApi = baseApi.injectEndpoints({
     }),
     forgotPassword: builder.mutation({
       query: (data) => ({
-        url: "auth/forgot-password",
+        url: "auth/admin/forgot-password",
         method: "POST",
         body: data,
       }),

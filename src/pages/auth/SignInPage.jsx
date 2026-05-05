@@ -1,17 +1,47 @@
 import { useState } from "react";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
+import { useLogInMutation } from "../../../Redux/features/auth/authApi";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../../Redux/Slice/authSlice";
+import { message } from "antd";
 
 function SignInPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [logIn, { isLoading }] = useLogInMutation();
 
   const handleCheckboxChange = (event) => {
     if (event.target.checked) {
       setIsChecked(true);
     } else {
       setIsChecked(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const email = form.email.value;
+    const password = form.password.value;
+
+    try {
+      const res = await logIn({ email, password }).unwrap();
+      if (res.success) {
+        message.success(res.message || "Admin login successful");
+        dispatch(
+          setUser({
+            user: res.data.user,
+            token: res.data.accessToken,
+            refreshToken: res.data.refreshToken,
+          }),
+        );
+        navigate("/");
+      }
+    } catch (err) {
+      message.error(err?.data?.message || "Login failed. Please try again.");
     }
   };
 
@@ -23,7 +53,7 @@ function SignInPage() {
             <div className="flex justify-center items-center mb-10">
               <img src="/logo.png" alt="" />
             </div>
-            <form className="space-y-5">
+            <form className="space-y-5" onSubmit={handleSubmit}>
               <div className="w-full">
                 <label className="text-xl text-[#0D0D0D] mb-2 font-bold">
                   Email
@@ -122,17 +152,20 @@ function SignInPage() {
                     Remember Password
                   </span>
                 </label>
-                <Link to="/forget-password" className="text-[#2D8C3C] text-xl font-medium hover:text-[#1E6B2B] transition-colors">
+                <Link
+                  to="/forget-password"
+                  className="text-[#2D8C3C] text-xl font-medium hover:text-[#1E6B2B] transition-colors"
+                >
                   Forgot Password?
                 </Link>
               </div>
               <div className="flex justify-center items-center">
                 <button
-                  onClick={() => navigate("/")}
-                  type="button"
-                  className="w-1/3 bg-[#2D8C3C] hover:bg-[#1E6B2B] text-white font-bold py-3 rounded-lg shadow-lg cursor-pointer mt-5 transition-colors"
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-1/3 bg-[#2D8C3C] hover:bg-[#1E6B2B] text-white font-bold py-3 rounded-lg shadow-lg cursor-pointer mt-5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Log In
+                  {isLoading ? "Logging in..." : "Log In"}
                 </button>
               </div>
             </form>

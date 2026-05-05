@@ -1,4 +1,5 @@
-export const url = import.meta.env.VITE_API_URL || "http://localhost:5000";
+export const url =
+  "https://implications-cove-tackle-synopsis.trycloudflare.com";
 export const getBaseUrl = () => {
-    return `${url}/api/v1`;
+  return `${url}/api/v1`;
 };
