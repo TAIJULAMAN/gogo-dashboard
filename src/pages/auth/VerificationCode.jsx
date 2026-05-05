@@ -1,10 +1,18 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  useVerifyEmailMutation,
+  useForgotPasswordMutation,
+} from "../../../Redux/features/auth/authApi";
+import { message } from "antd";
 
 function VerificationCode() {
-  const [code, setCode] = useState(new Array(5).fill(""));
-
+  const [code, setCode] = useState(new Array(6).fill(""));
   const navigate = useNavigate();
+
+  const [verifyEmail, { isLoading }] = useVerifyEmailMutation();
+  const [forgotPassword, { isLoading: isResending }] =
+    useForgotPasswordMutation();
 
   const handleChange = (value, index) => {
     if (!isNaN(value)) {
@@ -12,14 +20,56 @@ function VerificationCode() {
       newCode[index] = value;
       setCode(newCode);
 
-      if (value && index < 5) {
-        document.getElementById(`code-${index + 1}`).focus();
+      if (value && index < 6) {
+        const nextInput = document.getElementById(`code-${index + 1}`);
+        if (nextInput) nextInput.focus();
       }
     }
   };
 
   const handleVerifyCode = async () => {
-    navigate(`/new-password`);
+    const otp = code.join("");
+    const email = localStorage.getItem("resetEmail");
+
+    if (otp.length < 6) {
+      return message.error("Please enter the complete verification code.");
+    }
+    if (!email) {
+      return message.error(
+        "Email not found. Please go back and enter your email.",
+      );
+    }
+
+    try {
+      const res = await verifyEmail({ email, otp }).unwrap();
+      if (res.success) {
+        message.success(res.message || "OTP verified successfully");
+        localStorage.setItem("resetOtp", otp);
+        navigate(`/new-password`);
+      }
+    } catch (err) {
+      message.error(
+        err?.data?.message || "Failed to verify code. Please try again.",
+      );
+    }
+  };
+
+  const handleResend = async () => {
+    const email = localStorage.getItem("resetEmail");
+    if (!email) {
+      return message.error(
+        "Email not found. Please go back and enter your email.",
+      );
+    }
+
+    try {
+      const res = await forgotPassword({ email }).unwrap();
+      if (res.success) {
+        message.success(res.message || "OTP resent successfully");
+      }
+    } catch (err) {
+      message.error(err?.data?.message || "Failed to resend code.");
+    }
   };
 
   return (
@@ -49,15 +99,25 @@ function VerificationCode() {
             <div className="flex justify-center items-center my-5">
               <button
                 onClick={handleVerifyCode}
+                disabled={isLoading}
                 type="button"
-                className="w-1/3 bg-[#2D8C3C] hover:bg-[#1E6B2B] text-white font-bold py-3 rounded-lg shadow-lg cursor-pointer mt-5 transition-colors"
+                className="w-1/3 bg-[#2D8C3C] hover:bg-[#1E6B2B] text-white font-bold py-3 rounded-lg shadow-lg cursor-pointer mt-5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Verify Code
+                {isLoading ? "Verifying..." : "Verify Code"}
               </button>
             </div>
             <p className="text-[#6A6D76] text-center mb-10">
               You have not received the email?{" "}
-              <span className="text-[#2D8C3C] font-semibold cursor-pointer hover:text-[#1E6B2B] transition-colors"> Resend</span>
+              <span
+                onClick={handleResend}
+                className="text-[#2D8C3C] font-semibold cursor-pointer hover:text-[#1E6B2B] transition-colors"
+                style={{
+                  pointerEvents: isResending ? "none" : "auto",
+                  opacity: isResending ? 0.5 : 1,
+                }}
+              >
+                {isResending ? " Resending..." : " Resend"}
+              </span>
             </p>
           </div>
         </div>

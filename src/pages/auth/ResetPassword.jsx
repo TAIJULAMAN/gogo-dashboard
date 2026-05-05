@@ -1,10 +1,52 @@
 import { useState } from "react";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
+import { useResetPasswordMutation } from "../../../Redux/features/auth/authApi";
+import { message } from "antd";
 
 function ResetPassword() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const [resetPassword, { isLoading }] = useResetPasswordMutation();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const newPassword = form.newPassword.value;
+    const confirmPassword = form.confirmPassword.value;
+
+    if (newPassword !== confirmPassword) {
+      return message.error("Passwords do not match!");
+    }
+
+    const email = localStorage.getItem("resetEmail");
+    const otp = localStorage.getItem("resetOtp");
+
+    if (!email || !otp) {
+      return message.error(
+        "Missing email or OTP. Please restart the password reset process."
+      );
+    }
+
+    try {
+      const res = await resetPassword({
+        email,
+        otp,
+        newPassword,
+        confirmPassword,
+      }).unwrap();
+      if (res.success) {
+        message.success(res.message || "Admin password reset successful");
+        localStorage.removeItem("resetEmail");
+        localStorage.removeItem("resetOtp");
+        navigate("/sign-in");
+      }
+    } catch (err) {
+      message.error(
+        err?.data?.message || "Failed to reset password. Please try again."
+      );
+    }
+  };
 
   return (
     <div className="bg-white min-h-screen flex items-center justify-center p-5">
@@ -14,7 +56,7 @@ function ResetPassword() {
             <div className="flex justify-center items-center mb-10">
               <img src="/logo.png" alt="" />
             </div>
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="w-full">
                 <label className="text-xl text-[#0D0D0D] mb-2 font-bold">
                   New Password
@@ -22,7 +64,7 @@ function ResetPassword() {
                 <div className="w-full relative">
                   <input
                     type={showPassword ? "text" : "password"}
-                    name="password"
+                    name="newPassword"
                     placeholder="**********"
                     className="w-full px-5 py-3 border-2 border-[#6A6D76] rounded-md outline-none mt-5 placeholder:text-xl"
                     required
@@ -47,7 +89,7 @@ function ResetPassword() {
                 <div className="w-full relative">
                   <input
                     type={showPassword ? "text" : "password"}
-                    name="password"
+                    name="confirmPassword"
                     placeholder="**********"
                     className="w-full px-5 py-3 border-2 border-[#6A6D76] rounded-md outline-none mt-5 placeholder:text-xl"
                     required
@@ -67,11 +109,11 @@ function ResetPassword() {
               </div>
               <div className="flex justify-center items-center">
                 <button
-                  onClick={() => navigate("/sign-in")}
-                  type="button"
-                  className="w-1/3 bg-[#2D8C3C] hover:bg-[#1E6B2B] text-white font-bold py-3 rounded-lg shadow-lg cursor-pointer mt-5 transition-colors"
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-1/3 bg-[#2D8C3C] hover:bg-[#1E6B2B] text-white font-bold py-3 rounded-lg shadow-lg cursor-pointer mt-5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Update Password
+                  {isLoading ? "Updating..." : "Update Password"}
                 </button>
               </div>
             </form>
