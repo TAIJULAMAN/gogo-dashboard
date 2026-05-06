@@ -20,13 +20,11 @@ export const baseApi = createApi({
       }
 
       if (token) {
-        headers.set("Authorization", `${token}`);
+        headers.set("Authorization", `Bearer ${token}`);
       }
       return headers;
     },
   }),
   endpoints: () => ({}),
-  tagTypes: [
-    "auth",
-  ],
+  tagTypes: ["auth", "notification", "profile", "common", "deliverySettings"],
 });

@@ -2,9 +2,18 @@
 
 import { useNavigate } from "react-router-dom";
 import { IoMenu, IoNotificationsOutline } from "react-icons/io5";
+import { useGetProfileQuery } from "../../../Redux/features/settings/profileApi";
+import { useGetAllNotificationQuery } from "../../../Redux/features/notification/notificationApi";
 
 const MainHeader = ({ toggleSidebar }) => {
   const navigate = useNavigate();
+  const { data: profileData } = useGetProfileQuery();
+  const user = profileData?.data;
+
+  const { data: notificationsData, isLoading } = useGetAllNotificationQuery();
+  const unreadNotificationCount = notificationsData?.data?.filter(
+    (notification) => !notification.isRead,
+  )?.length;
 
   return (
     <div className="relative w-full px-5">
@@ -22,11 +31,13 @@ const MainHeader = ({ toggleSidebar }) => {
             <button
               type="button"
               aria-label="Notifications"
-              onClick={() => navigate('/notifications')}
+              onClick={() => navigate("/notifications")}
               className="relative p-2 rounded-full border border-primary-dark/30 hover:bg-primary-ultralight transition-colors"
             >
               <IoNotificationsOutline className="w-6 h-6 text-[#0D0D0D]" />
-              <span className="absolute -top-0.5 -right-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-primary-dark text-white text-[10px] px-1 leading-none font-semibold">3</span>
+              <span className="absolute -top-0.5 -right-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-primary-dark text-white text-[10px] px-1 leading-none font-semibold">
+                {unreadNotificationCount}
+              </span>
             </button>
             <div
               onClick={() => navigate("/profile")}
@@ -39,9 +50,11 @@ const MainHeader = ({ toggleSidebar }) => {
               />
               <div className="hidden md:block">
                 <h3 className="text-[#0D0D0D] text-lg font-semibold">
-                  Shah Aman
+                  {user?.firstName + " " + user?.lastName}
                 </h3>
-                <p className="text-primary-dark text-sm font-medium">Admin</p>
+                <p className="text-primary-dark text-sm font-medium">
+                  {user?.role}
+                </p>
               </div>
             </div>
           </div>

@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IoChevronBack } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
-import { ConfigProvider, InputNumber, message } from "antd";
+import { ConfigProvider, InputNumber, message, Spin } from "antd";
+import { useGetCommonQuery } from "../../../Redux/features/settings/commonApi";
+import { useUpdateDeliverySettingsMutation } from "../../../Redux/features/settings/deliverySettingsApi";
 
 const Parameter = () => {
   const navigate = useNavigate();
@@ -9,8 +11,32 @@ const Parameter = () => {
   const [chargePerMile, setChargePerMile] = useState(1.5);
   const [minDistance, setMinDistance] = useState(2);
 
-  const handleSave = () => {
-    message.success("Parameters updated successfully!");
+  const { data: commonData, isLoading } = useGetCommonQuery();
+  const [updateSettings, { isLoading: isUpdating }] = useUpdateDeliverySettingsMutation();
+
+  useEffect(() => {
+    if (commonData?.data?.deliverySettings) {
+      const settings = commonData.data.deliverySettings;
+      setBaseCharge(settings.baseDeliveryCharge ?? 5.0);
+      setChargePerMile(settings.chargePerMile ?? 1.5);
+      setMinDistance(settings.minimumDistanceMiles ?? 2);
+    }
+  }, [commonData]);
+
+  const handleSave = async () => {
+    try {
+      const payload = {
+        baseDeliveryCharge: baseCharge,
+        chargePerMile: chargePerMile,
+        minimumDistanceMiles: minDistance
+      };
+      const res = await updateSettings(payload).unwrap();
+      if (res.success) {
+        message.success(res.message || "Parameters updated successfully!");
+      }
+    } catch (err) {
+      message.error(err?.data?.message || "Failed to update parameters.");
+    }
   };
 
   return (
@@ -28,7 +54,12 @@ const Parameter = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
         {/* Delivery Charge Settings Card */}
-        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 relative">
+          {isLoading && (
+            <div className="absolute inset-0 bg-white/60 z-10 flex items-center justify-center rounded-2xl">
+              <Spin size="large" />
+            </div>
+          )}
           <div className="flex items-center gap-3 mb-8">
             <div className="w-2 h-8 bg-[#2D8C3C] rounded-full"></div>
             <h2 className="text-xl font-bold text-gray-800">
@@ -126,9 +157,10 @@ const Parameter = () => {
 
             <button
               onClick={handleSave}
-              className="w-full bg-[#2D8C3C] text-white font-bold py-4 rounded-xl hover:bg-[#256a2f] shadow-lg shadow-green-200 transition-all active:scale-[0.98] mt-4"
+              disabled={isUpdating}
+              className="w-full bg-[#2D8C3C] text-white font-bold py-4 rounded-xl hover:bg-[#256a2f] shadow-lg shadow-green-200 transition-all active:scale-[0.98] mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Update Parameters
+              {isUpdating ? "Updating..." : "Update Parameters"}
             </button>
           </div>
         </div>
@@ -157,7 +189,7 @@ const Parameter = () => {
                 <div className="flex justify-between items-center bg-green-50 p-4 rounded-lg">
                   <span className="font-semibold text-green-800">Total Delivery Fee</span>
                   <span className="text-xl font-black text-[#2D8C3C]">
-                    ${(baseCharge + (5 - minDistance) * chargePerMile).toFixed(2)}
+                    ${(baseCharge + Math.max(0, 5 - minDistance) * chargePerMile).toFixed(2)}
                   </span>
                 </div>
               </div>
