@@ -1,5 +1,5 @@
 export const url =
-  "https://implications-cove-tackle-synopsis.trycloudflare.com";
+  "https://hear-hostel-peers-broker.trycloudflare.com";
 export const getBaseUrl = () => {
   return `${url}/api/v1`;
 };

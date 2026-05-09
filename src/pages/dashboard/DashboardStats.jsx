@@ -1,12 +1,16 @@
+import { useGetDashboardOverviewQuery } from "../../../Redux/features/dashboard/dashboardApi";
 import { LuUsers } from "react-icons/lu";
 import { FaMotorcycle } from "react-icons/fa";
 import { MdList, MdOutlineInventory2 } from "react-icons/md";
 
 const DashboardStats = () => {
+  const { data, isLoading } = useGetDashboardOverviewQuery();
+  const dashboardData = data?.data || {};
+
   const stats = [
     {
       label: "Total User",
-      value: "10k",
+      value: isLoading ? "..." : dashboardData.totalUsers || 0,
       icon: LuUsers,
       color: "text-[#2D8C3C]",
       bg: "bg-green-50",
@@ -14,7 +18,7 @@ const DashboardStats = () => {
     },
     {
       label: "Total Riders",
-      value: "500",
+      value: isLoading ? "..." : dashboardData.totalRiders || 0,
       icon: FaMotorcycle,
       color: "text-purple-600",
       bg: "bg-purple-50",
@@ -22,7 +26,7 @@ const DashboardStats = () => {
     },
     {
       label: "Total Orders",
-      value: "1200",
+      value: isLoading ? "..." : dashboardData.totalOrders || 0,
       icon: MdList,
       color: "text-blue-600",
       bg: "bg-blue-50",
@@ -30,7 +34,7 @@ const DashboardStats = () => {
     },
     {
       label: "Total Earnings",
-      value: "$120000",
+      value: isLoading ? "..." : `AED ${dashboardData.totalEarning?.toFixed(2) || 0}`,
       icon: MdOutlineInventory2,
       color: "text-orange-600",
       bg: "bg-orange-50",

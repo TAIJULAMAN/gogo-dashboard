@@ -10,7 +10,6 @@ const Parameter = () => {
   const [baseCharge, setBaseCharge] = useState(5.0);
   const [chargePerMile, setChargePerMile] = useState(1.5);
   const [minDistance, setMinDistance] = useState(2);
-
   const { data: commonData, isLoading } = useGetCommonQuery();
   const [updateSettings, { isLoading: isUpdating }] = useUpdateDeliverySettingsMutation();
 
@@ -86,7 +85,7 @@ const Parameter = () => {
                   value={baseCharge}
                   onChange={setBaseCharge}
                   className="w-full font-semibold text-lg"
-                  prefix={<span className="text-gray-400 mr-1">$</span>}
+                  prefix={<span className="text-gray-400 mr-1">AED</span>}
                   formatter={(value) =>
                     `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                   }
@@ -116,7 +115,7 @@ const Parameter = () => {
                   value={chargePerMile}
                   onChange={setChargePerMile}
                   className="w-full font-semibold text-lg"
-                  prefix={<span className="text-gray-400 mr-1">$</span>}
+                  prefix={<span className="text-gray-400 mr-1">AED</span>}
                   formatter={(value) =>
                     `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                   }
@@ -175,13 +174,13 @@ const Parameter = () => {
               <div className="flex justify-between items-center">
                 <span className="text-gray-600">Base Price (up to {minDistance} mi)</span>
                 <span className="font-bold text-gray-800">
-                  ${baseCharge.toFixed(2)}
+                  AED {baseCharge.toFixed(2)}
                 </span>
               </div>
               <div className="flex justify-between items-center pb-4 border-b border-gray-100">
                 <span className="text-gray-600">Price per extra mile</span>
                 <span className="font-bold text-gray-800">
-                  ${chargePerMile.toFixed(2)}
+                  AED {chargePerMile.toFixed(2)}
                 </span>
               </div>
               <div className="pt-2">
@@ -189,13 +188,13 @@ const Parameter = () => {
                 <div className="flex justify-between items-center bg-green-50 p-4 rounded-lg">
                   <span className="font-semibold text-green-800">Total Delivery Fee</span>
                   <span className="text-xl font-black text-[#2D8C3C]">
-                    ${(baseCharge + Math.max(0, 5 - minDistance) * chargePerMile).toFixed(2)}
+                    AED {(baseCharge + Math.max(0, 5 - minDistance) * chargePerMile).toFixed(2)}
                   </span>
                 </div>
               </div>
             </div>
           </div>
-          
+
           <div className="mt-8 p-4 bg-white/60 rounded-xl border border-white">
             <p className="text-sm text-gray-600 leading-relaxed">
               <span className="font-bold text-[#2D8C3C]">Note:</span> These parameters directly affect the checkout price for all customers. Changes are applied in real-time.

@@ -3,76 +3,14 @@ import { IoChevronBack, IoSearch } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import { ConfigProvider, Table, Progress } from "antd";
 import { FaFireAlt } from "react-icons/fa";
+import { useGetHotAreasQuery } from "../../../Redux/features/hotArea/hotAreaApi";
 
 const HotArea = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const { data, isLoading } = useGetHotAreasQuery();
 
-  const areaData = [
-    {
-      key: "1",
-      areaName: "Downtown",
-      city: "New York",
-      driverCount: 145,
-      orderCount: 450,
-    },
-    {
-      key: "2",
-      areaName: "Brooklyn Heights",
-      city: "New York",
-      driverCount: 82,
-      orderCount: 230,
-    },
-    {
-      key: "3",
-      areaName: "Manhattan",
-      city: "New York",
-      driverCount: 210,
-      orderCount: 680,
-    },
-    {
-      key: "4",
-      areaName: "Queens",
-      city: "New York",
-      driverCount: 56,
-      orderCount: 120,
-    },
-    {
-      key: "5",
-      areaName: "Santa Monica",
-      city: "Los Angeles",
-      driverCount: 120,
-      orderCount: 380,
-    },
-    {
-      key: "6",
-      areaName: "Beverly Hills",
-      city: "Los Angeles",
-      driverCount: 45,
-      orderCount: 90,
-    },
-    {
-      key: "7",
-      areaName: "Hollywood",
-      city: "Los Angeles",
-      driverCount: 98,
-      orderCount: 310,
-    },
-    {
-      key: "8",
-      areaName: "Miami Beach",
-      city: "Miami",
-      driverCount: 175,
-      orderCount: 520,
-    },
-    {
-      key: "9",
-      areaName: "South Beach",
-      city: "Miami",
-      driverCount: 130,
-      orderCount: 410,
-    },
-  ];
+  const areaData = data?.data || [];
 
   const columns = [
     {
@@ -85,18 +23,12 @@ const HotArea = () => {
       title: "Area Name",
       dataIndex: "areaName",
       key: "areaName",
-      render: (text) => <span className="font-bold text-gray-800">{text}</span>,
-    },
-    {
-      title: "City",
-      dataIndex: "city",
-      key: "city",
-      render: (text) => <span className="text-gray-500 font-medium">{text}</span>,
+      render: (text) => <span className="font-bold text-gray-800">{text || "N/A"}</span>,
     },
     {
       title: "Driver Count",
-      dataIndex: "driverCount",
-      key: "driverCount",
+      dataIndex: "numberOfRiders",
+      key: "numberOfRiders",
       render: (count) => (
         <div className="flex items-center gap-4">
           <span className="font-bold text-[#2D8C3C] min-w-[30px]">{count}</span>
@@ -114,8 +46,8 @@ const HotArea = () => {
     },
     {
       title: "Order Count",
-      dataIndex: "orderCount",
-      key: "orderCount",
+      dataIndex: "numberOfOrders",
+      key: "numberOfOrders",
       render: (count) => (
         <div className="flex items-center gap-4">
           <span className="font-bold text-blue-600 min-w-[30px]">{count}</span>
@@ -135,8 +67,7 @@ const HotArea = () => {
 
   const filteredData = areaData.filter(
     (item) =>
-      item.areaName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.city.toLowerCase().includes(searchQuery.toLowerCase())
+      item.areaName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -174,7 +105,7 @@ const HotArea = () => {
             Total Orders
           </p>
           <p className="text-3xl font-black text-red-700">
-            {areaData.reduce((acc, curr) => acc + curr.orderCount, 0)}
+            {areaData.reduce((acc, curr) => acc + (curr.numberOfOrders || 0), 0)}
           </p>
         </div>
         <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100 shadow-sm transition-transform hover:scale-[1.02]">
@@ -182,10 +113,10 @@ const HotArea = () => {
             Avg Orders Per Area
           </p>
           <p className="text-3xl font-black text-blue-700">
-            {Math.round(
-              areaData.reduce((acc, curr) => acc + curr.orderCount, 0) /
-                areaData.length
-            )}
+            {areaData.length > 0 
+              ? Math.round(areaData.reduce((acc, curr) => acc + (curr.numberOfOrders || 0), 0) / areaData.length)
+              : 0
+            }
           </p>
         </div>
         <div className="bg-green-50 p-6 rounded-2xl border border-green-100 shadow-sm transition-transform hover:scale-[1.02]">
@@ -193,7 +124,7 @@ const HotArea = () => {
             Active Drivers
           </p>
           <p className="text-3xl font-black text-green-700">
-            {areaData.reduce((acc, curr) => acc + curr.driverCount, 0)}
+            {areaData.reduce((acc, curr) => acc + (curr.numberOfRiders || 0), 0)}
           </p>
         </div>
       </div>
@@ -215,9 +146,11 @@ const HotArea = () => {
           <Table
             dataSource={filteredData}
             columns={columns}
+            loading={isLoading}
             pagination={{ pageSize: 8 }}
             className="border border-gray-50 rounded-xl overflow-hidden"
             scroll={{ x: "max-content" }}
+            rowKey={(record) => record.areaName}
           />
         </ConfigProvider>
       </div>

@@ -1,119 +1,111 @@
-import { ConfigProvider, Modal, Table, Select } from "antd";
+import { ConfigProvider, Modal, Table, Select, message } from "antd";
 import { useMemo, useState } from "react";
 import { IoSearch, IoChevronBack } from "react-icons/io5";
 import { MdBlock, MdCheckCircle } from "react-icons/md";
 import { FaRegEye } from "react-icons/fa";
 import { LuUsers } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
+import { useGetAllUsersQuery, useBlockUserMutation } from "../../../Redux/features/user/userApi";
+import dayjs from "dayjs";
 
 const statusColor = {
-  Active:  { bg: "bg-green-100",  text: "text-green-700"  },
+  Active: { bg: "bg-green-100", text: "text-green-700" },
+  Approved: { bg: "bg-green-100", text: "text-green-700" },
   Pending: { bg: "bg-yellow-100", text: "text-yellow-700" },
-  Blocked: { bg: "bg-red-100",    text: "text-red-700"    },
+  Blocked: { bg: "bg-red-100", text: "text-red-700" },
 };
 
 function UserDetails() {
   const navigate = useNavigate();
 
-  const [dataSource, setDataSource] = useState([
-    { key: "1",  fullName: "John Doe",        role: "User",  email: "john@example.com",     phone: "+1 987 654 3210", joined: "2024-01-12", status: "Active"  },
-    { key: "2",  fullName: "Emma Smith",       role: "Rider", email: "emma@example.com",     phone: "+1 987 654 3211", joined: "2024-03-28", status: "Pending" },
-    { key: "3",  fullName: "Liam Johnson",     role: "User",  email: "liam@example.com",     phone: "+1 987 654 3212", joined: "2024-06-15", status: "Active"  },
-    { key: "4",  fullName: "Olivia Brown",     role: "Rider", email: "olivia@example.com",   phone: "+1 987 654 3213", joined: "2024-08-02", status: "Blocked" },
-    { key: "5",  fullName: "Noah Davis",       role: "User",  email: "noah@example.com",     phone: "+1 987 654 3214", joined: "2024-09-10", status: "Active"  },
-    { key: "6",  fullName: "Sophia Miller",    role: "Rider", email: "sophia@example.com",   phone: "+1 987 654 3215", joined: "2024-11-19", status: "Pending" },
-    { key: "7",  fullName: "James Wilson",     role: "Rider", email: "james@example.com",    phone: "+1 987 654 3216", joined: "2025-01-05", status: "Active"  },
-    { key: "8",  fullName: "Isabella Moore",   role: "Rider", email: "isabella@example.com", phone: "+1 987 654 3217", joined: "2025-02-21", status: "Active"  },
-    { key: "9",  fullName: "Benjamin Taylor",  role: "User",  email: "benjamin@example.com", phone: "+1 987 654 3218", joined: "2025-03-03", status: "Blocked" },
-    { key: "10", fullName: "Mia Anderson",     role: "User",  email: "mia@example.com",      phone: "+1 987 654 3219", joined: "2025-04-12", status: "Active"  },
-  ]);
+  const { data, isLoading } = useGetAllUsersQuery();
+  const [blockUserMutation] = useBlockUserMutation();
+  const dataSource = data?.data || [];
 
-  const [searchQuery, setSearchQuery]   = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState(undefined);
-
-  // Modals
-  const [viewUser, setViewUser]       = useState(null);
-  const [blockUser, setBlockUser]     = useState(null);
+  const [viewUser, setViewUser] = useState(null);
+  const [blockUser, setBlockUser] = useState(null);
   const [approveUser, setApproveUser] = useState(null);
+  const totalUsers = data?.stats?.totalUsers || 0;
+  const activeUsers = data?.stats?.activeUsers || 0;
+  const blockedUsers = data?.stats?.blockedUsers || 0;
 
-  // ─── Stats ───────────────────────────────────────
-  const totalUsers   = dataSource.length;
-  const activeUsers  = dataSource.filter((r) => r.status === "Active").length;
-  const pendingUsers = dataSource.filter((r) => r.status === "Pending").length;
-  const blockedUsers = dataSource.filter((r) => r.status === "Blocked").length;
-
-  // ─── Filter ──────────────────────────────────────
   const filteredData = useMemo(() => {
     const q = (searchQuery || "").toLowerCase().trim();
     return dataSource.filter((r) => {
+      const fullName = `${r.firstName} ${r.lastName}`.toLowerCase();
       const matchStatus = statusFilter ? r.status === statusFilter : true;
       const matchQuery = q
-        ? [r.fullName, r.email, r.phone, r.role, r.status]
-            .filter(Boolean)
-            .some((v) => String(v).toLowerCase().includes(q))
+        ? [fullName, r.email, r.phoneNumber, r.role, r.status]
+          .filter(Boolean)
+          .some((v) => String(v).toLowerCase().includes(q))
         : true;
       return matchStatus && matchQuery;
     });
   }, [dataSource, statusFilter, searchQuery]);
 
-  // ─── Block / Unblock ─────────────────────────────
-  const confirmBlockToggle = () => {
-    setDataSource((prev) =>
-      prev.map((r) =>
-        r.key === blockUser.key
-          ? { ...r, status: r.status === "Blocked" ? "Active" : "Blocked" }
-          : r
-      )
-    );
-    setBlockUser(null);
+  const confirmBlockToggle = async () => {
+    if (!blockUser) return;
+    try {
+      const newStatus = blockUser.status === "Blocked" ? "Approved" : "Blocked";
+      
+      const formData = new FormData();
+      formData.append("status", newStatus);
+
+      const res = await blockUserMutation({
+        userId: blockUser._id,
+        data: formData
+      }).unwrap();
+
+      if (res.success) {
+        message.success(`User ${newStatus === "Blocked" ? "blocked" : "unblocked"} successfully`);
+        setBlockUser(null);
+      }
+    } catch (error) {
+      message.error(error?.data?.message || "Failed to update user status");
+    }
   };
 
-  // ─── Approve ─────────────────────────────────────
   const confirmApprove = () => {
-    setDataSource((prev) =>
-      prev.map((r) =>
-        r.key === approveUser.key ? { ...r, status: "Active" } : r
-      )
-    );
+    // Mutation placeholder
     setApproveUser(null);
   };
 
-  // ─── Columns ─────────────────────────────────────
   const columns = [
     {
-      title: "No",
-      key: "no",
-      width: 60,
-      render: (_, _r, index) => index + 1,
-    },
-    {
       title: "Full Name",
-      dataIndex: "fullName",
       key: "fullName",
-      render: (value) => (
+      render: (_, record) => (
         <div className="flex items-center gap-3">
           <img
             src={`/avatar.png`}
             className="w-10 h-10 object-cover rounded-full"
             alt="User Avatar"
           />
-          <span className="font-semibold leading-none">{value}</span>
+          <span className="font-semibold leading-none">{record.firstName} {record.lastName}</span>
         </div>
       ),
     },
-    { title: "Role",      dataIndex: "role",   key: "role"  },
-    { title: "Email",     dataIndex: "email",  key: "email" },
-    { title: "Phone No",  dataIndex: "phone",  key: "phone" },
-    { title: "Joined Date", dataIndex: "joined", key: "joined" },
+    { title: "Role", dataIndex: "role", key: "role" },
+    { title: "Email", dataIndex: "email", key: "email" },
+    { title: "Phone No", dataIndex: "phoneNumber", key: "phoneNumber" },
+    {
+      title: "Joined Date",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (date) => dayjs(date).format("MMM DD, YYYY")
+    },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
       render: (status) => {
-        const c = statusColor[status] ?? { bg: "bg-gray-100", text: "text-gray-700" };
+        const displayStatus = status === "Blocked" ? "Blocked" : "Active";
+        const c = statusColor[displayStatus] || statusColor.Active;
         return (
           <span className={`px-3 py-1 rounded-full text-sm font-semibold ${c.bg} ${c.text}`}>
-            {status}
+            {displayStatus}
           </span>
         );
       },
@@ -123,27 +115,18 @@ function UserDetails() {
       key: "action",
       render: (_, record) => (
         <div className="flex items-center gap-3">
-          {/* View */}
           <button onClick={() => setViewUser(record)} title="View Details">
             <FaRegEye className="text-blue-500 w-5 h-5 cursor-pointer hover:text-blue-700 transition-colors" />
           </button>
-          {/* Approve — only for Pending */}
-          {record.status === "Pending" && (
-            <button onClick={() => setApproveUser(record)} title="Approve User">
-              <MdCheckCircle className="text-green-500 w-5 h-5 cursor-pointer hover:text-green-700 transition-colors" />
-            </button>
-          )}
-          {/* Block / Unblock */}
           <button
             onClick={() => setBlockUser(record)}
             title={record.status === "Blocked" ? "Unblock" : "Block"}
           >
             <MdBlock
-              className={`w-5 h-5 cursor-pointer transition-colors ${
-                record.status === "Blocked"
-                  ? "text-gray-400 hover:text-gray-600"
-                  : "text-red-500 hover:text-red-700"
-              }`}
+              className={`w-5 h-5 cursor-pointer transition-colors ${record.status === "Blocked"
+                ? "text-gray-400 hover:text-gray-600"
+                : "text-red-500 hover:text-red-700"
+                }`}
             />
           </button>
         </div>
@@ -153,7 +136,6 @@ function UserDetails() {
 
   return (
     <div>
-      {/* ── Page Header ── */}
       <div className="bg-[#2D8C3C] px-4 md:px-5 py-3 rounded-md mb-3 flex flex-wrap md:flex-nowrap items-start md:items-center gap-2 md:gap-3">
         <button
           onClick={() => navigate(-1)}
@@ -209,7 +191,7 @@ function UserDetails() {
               size="large"
               style={{ minWidth: 180 }}
               options={[
-                { label: "Active",  value: "Active"  },
+                { label: "Approved", value: "Approved" },
                 { label: "Pending", value: "Pending" },
                 { label: "Blocked", value: "Blocked" },
               ]}
@@ -217,14 +199,11 @@ function UserDetails() {
           </ConfigProvider>
         </div>
       </div>
-
-      {/* ── Stats Cards ── */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 mt-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6 mt-4">
         {[
-          { label: "All Users", value: totalUsers,   icon: LuUsers,  color: "text-[#2D8C3C]",  bg: "bg-green-50"  },
-          { label: "Active",    value: activeUsers,  icon: LuUsers,  color: "text-green-600",   bg: "bg-green-50"  },
-          { label: "Pending",   value: pendingUsers, icon: LuUsers,  color: "text-yellow-600",  bg: "bg-yellow-50" },
-          { label: "Blocked",   value: blockedUsers, icon: MdBlock,  color: "text-red-500",     bg: "bg-red-50"    },
+          { label: "All Users", value: totalUsers, icon: LuUsers, color: "text-[#2D8C3C]", bg: "bg-green-50" },
+          { label: "Active", value: activeUsers, icon: LuUsers, color: "text-green-600", bg: "bg-green-50" },
+          { label: "Blocked", value: blockedUsers, icon: MdBlock, color: "text-red-500", bg: "bg-red-50" },
         ].map(({ label, value, icon: Icon, color, bg }) => (
           <div key={label} className={`flex flex-col justify-center items-center p-6 ${bg} rounded-xl gap-1 shadow-sm`}>
             <Icon className={`w-8 h-8 ${color} mb-1`} />
@@ -233,8 +212,6 @@ function UserDetails() {
           </div>
         ))}
       </div>
-
-      {/* ── Table ── */}
       <ConfigProvider
         theme={{
           components: {
@@ -258,32 +235,31 @@ function UserDetails() {
         <Table
           dataSource={filteredData}
           columns={columns}
-          pagination={{ pageSize: 8 }}
+          loading={isLoading}
+          pagination={{ pageSize: 10 }}
           scroll={{ x: "max-content" }}
+          rowKey="_id"
         />
       </ConfigProvider>
-
-      {/* ── View Modal ── */}
       <Modal open={!!viewUser} centered onCancel={() => setViewUser(null)} footer={null} width={620}>
         {viewUser && (
           <div>
             <div className="bg-gradient-to-r from-[#2D8C3C] to-[#3aad50] p-6 -m-6 mb-6 rounded-t-lg">
               <div className="flex items-center gap-5">
                 <img
-                  src={`https://avatar.iran.liara.run/public/${viewUser.key}`}
-                  alt={viewUser.fullName}
+                  src={`https://avatar.iran.liara.run/public/boy?username=${viewUser.firstName}`}
+                  alt={viewUser.firstName}
                   className="w-20 h-20 rounded-full border-4 border-white shadow-lg object-cover"
                 />
                 <div className="text-white">
-                  <h2 className="text-2xl font-bold mb-1">{viewUser.fullName}</h2>
+                  <h2 className="text-2xl font-bold mb-1">{viewUser.firstName} {viewUser.lastName}</h2>
                   <div className="flex items-center gap-2">
                     <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium">
                       {viewUser.role}
                     </span>
                     <span
-                      className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                        statusColor[viewUser.status]?.bg ?? "bg-gray-100"
-                      } ${statusColor[viewUser.status]?.text ?? "text-gray-700"}`}
+                      className={`px-3 py-1 rounded-full text-sm font-semibold ${statusColor[viewUser.status]?.bg ?? "bg-gray-100"
+                        } ${statusColor[viewUser.status]?.text ?? "text-gray-700"}`}
                     >
                       {viewUser.status}
                     </span>
@@ -294,11 +270,14 @@ function UserDetails() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {[
-                ["Email",       viewUser.email  ],
-                ["Phone No",    viewUser.phone  ],
-                ["Role",        viewUser.role   ],
-                ["Joined Date", viewUser.joined ],
-                ["Status",      viewUser.status ],
+                ["Email", viewUser.email],
+                ["Phone No", viewUser.phoneNumber],
+                ["Role", viewUser.role],
+                ["Joined Date", dayjs(viewUser.createdAt).format("MMM DD, YYYY")],
+                ["Status", viewUser.status],
+                ["Company", viewUser.companyName || "N/A"],
+                ["TRN No", viewUser.trnVatNo || "N/A"],
+                ["Referral", viewUser.referralCode || "N/A"],
               ].map(([label, val]) => (
                 <div key={label} className="bg-white border border-gray-200 p-4 rounded-xl shadow-sm">
                   <div className="text-gray-500 text-sm mb-1">{label}</div>
@@ -318,22 +297,19 @@ function UserDetails() {
           </div>
         )}
       </Modal>
-
-      {/* ── Block / Unblock Modal ── */}
       <Modal open={!!blockUser} centered onCancel={() => setBlockUser(null)} footer={null}>
         <div className="flex flex-col justify-center items-center py-8">
           <MdBlock
-            className={`w-14 h-14 mb-4 ${
-              blockUser?.status === "Blocked" ? "text-gray-400" : "text-red-500"
-            }`}
+            className={`w-14 h-14 mb-4 ${blockUser?.status === "Blocked" ? "text-gray-400" : "text-red-500"
+              }`}
           />
           <h2 className="text-2xl font-bold text-center text-[#2D8C3C] mb-2">
             {blockUser?.status === "Blocked" ? "Unblock User" : "Block User"}
           </h2>
           <p className="text-base text-center text-gray-600 mb-6">
             {blockUser?.status === "Blocked"
-              ? `Do you want to unblock ${blockUser?.fullName}?`
-              : `Do you want to block ${blockUser?.fullName}?`}
+              ? `Do you want to unblock ${blockUser?.firstName} ${blockUser?.lastName}?`
+              : `Do you want to block ${blockUser?.firstName} ${blockUser?.lastName}?`}
           </p>
           <div className="flex gap-3">
             <button
@@ -344,25 +320,22 @@ function UserDetails() {
             </button>
             <button
               onClick={confirmBlockToggle}
-              className={`text-white font-semibold py-2 px-6 rounded-lg transition-colors ${
-                blockUser?.status === "Blocked"
-                  ? "bg-[#2D8C3C] hover:bg-[#256a2f]"
-                  : "bg-red-500 hover:bg-red-700"
-              }`}
+              className={`text-white font-semibold py-2 px-6 rounded-lg transition-colors ${blockUser?.status === "Blocked"
+                ? "bg-[#2D8C3C] hover:bg-[#256a2f]"
+                : "bg-red-500 hover:bg-red-700"
+                }`}
             >
               {blockUser?.status === "Blocked" ? "Unblock" : "Block"}
             </button>
           </div>
         </div>
       </Modal>
-
-      {/* ── Approve Modal ── */}
       <Modal open={!!approveUser} centered onCancel={() => setApproveUser(null)} footer={null}>
         <div className="flex flex-col justify-center items-center py-8">
           <MdCheckCircle className="w-14 h-14 mb-4 text-green-500" />
           <h2 className="text-2xl font-bold text-center text-[#2D8C3C] mb-2">Approve User</h2>
           <p className="text-base text-center text-gray-600 mb-6">
-            Approve <span className="font-semibold">{approveUser?.fullName}</span> as an active user?
+            Approve <span className="font-semibold">{approveUser?.firstName} {approveUser?.lastName}</span> as an active user?
           </p>
           <div className="flex gap-3">
             <button

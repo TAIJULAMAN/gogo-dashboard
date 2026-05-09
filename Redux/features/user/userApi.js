@@ -10,10 +10,35 @@ const userApi = baseApi.injectEndpoints({
             }),
             providesTags: ["user"],
         }),
-        deleteUser: builder.mutation({
-            query: (_id) => ({
-                url: `users/delete-user/${_id}`,
-                method: "DELETE",
+        blockUser: builder.mutation({
+            query: ({ userId, data }) => ({
+                url: `users/${userId}`,
+                method: "PATCH",
+                body: data,
+            }),
+            invalidatesTags: ["user"],
+        }),
+        getAllRider: builder.query({
+            query: (params) => ({
+                url: "users/riders",
+                method: "GET",
+                params,
+            }),
+            providesTags: ["user"],
+        }),
+        blockRider: builder.mutation({
+            query: ({ riderId, data }) => ({
+                url: `users/${riderId}`,
+                method: "PATCH",
+                body: data,
+            }),
+            invalidatesTags: ["user"],
+        }),
+        approveRider: builder.mutation({
+            query: ({ riderId, data }) => ({
+                url: `users/${riderId}`,
+                method: "PATCH",
+                body: data,
             }),
             invalidatesTags: ["user"],
         }),
@@ -22,7 +47,10 @@ const userApi = baseApi.injectEndpoints({
 
 export const {
     useGetAllUsersQuery,
-    useDeleteUserMutation,
+    useBlockUserMutation,
+    useGetAllRiderQuery,
+    useBlockRiderMutation,
+    useApproveRiderMutation
 } = userApi;
 
 export default userApi;
