@@ -1,5 +1,5 @@
 export const url =
-  "https://hear-hostel-peers-broker.trycloudflare.com";
+  "https://gogo-backend-agsd.onrender.com";
 export const getBaseUrl = () => {
   return `${url}/api/v1`;
 };
