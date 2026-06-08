@@ -13,7 +13,11 @@ function ListingTable() {
     const [searchQuery, setSearchQuery] = useState("");
 
     const { data, isLoading } = useGetAllOrdersQuery();
-    const dataSource = data?.data || [];
+    const dataSource = Array.isArray(data?.data)
+        ? data.data
+        : Array.isArray(data?.data?.result)
+        ? data.data.result
+        : [];
 
     const showViewModal = (listing) => {
         setSelectedListing(listing);

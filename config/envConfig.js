@@ -1,5 +1,5 @@
 export const url =
-  "https://gogo-backend-agsd.onrender.com";
+  "http://localhost:5000";
 export const getBaseUrl = () => {
   return `${url}/api/v1`;
 };

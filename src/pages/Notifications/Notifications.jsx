@@ -14,10 +14,11 @@ export default function Notifications() {
   const [updateSingleNotification] = useUpdateSingleNotificationMutation();
   const [updateAllNotification] = useUpdateAllNotificationMutation();
 
-  const rawNotifications = notificationsData?.data || [];
-  console.log(rawNotifications);
-
-  const items = Array.isArray(rawNotifications) ? rawNotifications : [];
+  const items = Array.isArray(notificationsData?.data)
+    ? notificationsData.data
+    : Array.isArray(notificationsData?.data?.result)
+    ? notificationsData.data.result
+    : [];
 
   const markRead = async (id, read = true) => {
     if (!read) return; // Assuming the API only supports marking as read

@@ -9,8 +9,11 @@ const HotArea = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const { data, isLoading } = useGetHotAreasQuery();
-
-  const areaData = data?.data || [];
+  const areaData = Array.isArray(data?.data)
+    ? data.data
+    : Array.isArray(data?.data?.result)
+    ? data.data.result
+    : [];
 
   const columns = [
     {

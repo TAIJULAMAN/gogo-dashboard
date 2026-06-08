@@ -19,28 +19,34 @@ import Listing from "../pages/Listing/Listing";
 import RiderManagement from "../pages/RiderManagement/RiderManagement";
 import Parameter from "../pages/Parameter/Parameter";
 import HotArea from "../pages/HotArea/HotArea";
+import ErrorPage from "../components/ErrorPage/ErrorPage";
 
 const router = createBrowserRouter([
   {
     path: "/sign-in",
     element: <SignInPage />,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/forget-password",
     element: <ForgetPassword />,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/verification-code",
     element: <VerificationCode />,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/new-password",
     element: <ResetPassword />,
+    errorElement: <ErrorPage />,
   },
 
   {
     path: "/",
     element: <MainLayout />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/",

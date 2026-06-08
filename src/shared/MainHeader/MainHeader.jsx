@@ -11,9 +11,15 @@ const MainHeader = ({ toggleSidebar }) => {
   const user = profileData?.data;
 
   const { data: notificationsData, isLoading } = useGetAllNotificationQuery();
-  const unreadNotificationCount = notificationsData?.data?.filter(
+  const notificationsList = Array.isArray(notificationsData?.data)
+    ? notificationsData.data
+    : Array.isArray(notificationsData?.data?.result)
+    ? notificationsData.data.result
+    : [];
+
+  const unreadNotificationCount = notificationsList.filter(
     (notification) => !notification.isRead,
-  )?.length;
+  ).length;
 
   return (
     <div className="relative w-full px-5">

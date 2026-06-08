@@ -20,7 +20,11 @@ function UserDetails() {
 
   const { data, isLoading } = useGetAllUsersQuery();
   const [blockUserMutation] = useBlockUserMutation();
-  const dataSource = data?.data || [];
+  const dataSource = Array.isArray(data?.data)
+    ? data.data
+    : Array.isArray(data?.data?.result)
+    ? data.data.result
+    : [];
 
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState(undefined);

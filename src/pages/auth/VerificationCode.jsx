@@ -7,7 +7,7 @@ import {
 import { message } from "antd";
 
 function VerificationCode() {
-  const [code, setCode] = useState(new Array(6).fill(""));
+  const [code, setCode] = useState(new Array(4).fill(""));
   const navigate = useNavigate();
 
   const [verifyEmail, { isLoading }] = useVerifyEmailMutation();
@@ -20,10 +20,17 @@ function VerificationCode() {
       newCode[index] = value;
       setCode(newCode);
 
-      if (value && index < 6) {
+      if (value && index < 3) {
         const nextInput = document.getElementById(`code-${index + 1}`);
         if (nextInput) nextInput.focus();
       }
+    }
+  };
+
+  const handleKeyDown = (e, index) => {
+    if (e.key === "Backspace" && !code[index] && index > 0) {
+      const prevInput = document.getElementById(`code-${index - 1}`);
+      if (prevInput) prevInput.focus();
     }
   };
 
@@ -31,7 +38,7 @@ function VerificationCode() {
     const otp = code.join("");
     const email = localStorage.getItem("resetEmail");
 
-    if (otp.length < 6) {
+    if (otp.length < 4) {
       return message.error("Please enter the complete verification code.");
     }
     if (!email) {
@@ -91,6 +98,7 @@ function VerificationCode() {
                     maxLength="1"
                     value={digit}
                     onChange={(e) => handleChange(e.target.value, index)}
+                    onKeyDown={(e) => handleKeyDown(e, index)}
                     className="shadow-xs w-12 h-12 text-2xl text-center border border-[#6A6D76] text-[#0d0d0d] rounded-lg focus:outline-none"
                   />
                 ))}

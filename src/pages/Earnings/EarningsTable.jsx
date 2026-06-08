@@ -10,7 +10,11 @@ function EarningsTable() {
   const [searchQuery, setSearchQuery] = useState("");
 
   const { data, isLoading } = useGetAdminEarningsQuery();
-  const dataSource = data?.data || [];
+  const dataSource = Array.isArray(data?.data)
+    ? data.data
+    : Array.isArray(data?.data?.result)
+    ? data.data.result
+    : [];
 
   const showViewModal = (user) => {
     setSelectedUser(user);
@@ -21,9 +25,25 @@ function EarningsTable() {
     setSelectedUser(null);
   };
 
+  const mappedDataSource = useMemo(() => {
+    return dataSource.map((order) => {
+      const customer = order.user;
+      const customerName = customer?.fullName || 
+        `${customer?.firstName || ""} ${customer?.lastName || ""}`.trim() || 
+        "Unknown User";
+      return {
+        ...order,
+        fullName: customerName,
+        date: order.completedAt || order.createdAt,
+        commission: order.price,
+        parcel: order._id,
+      };
+    });
+  }, [dataSource]);
+
   const filteredData = useMemo(() => {
     const q = (searchQuery || "").toLowerCase().trim();
-    return dataSource.filter((r) => {
+    return mappedDataSource.filter((r) => {
       const matchQuery = q
         ? [r.fullName, r.parcel]
           .filter(Boolean)
@@ -31,7 +51,7 @@ function EarningsTable() {
         : true;
       return matchQuery;
     });
-  }, [dataSource, searchQuery]);
+  }, [mappedDataSource, searchQuery]);
 
   const columns = [
     {
