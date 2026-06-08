@@ -72,7 +72,7 @@ function ListingTable() {
             title: "Price",
             dataIndex: "price",
             key: "price",
-            render: (price) => <span className="font-bold text-[#2D8C3C]">AED {price}</span>,
+            render: (price) => <span className="font-bold text-[#2D8C3C]">AED {Number(price || 0).toFixed(2)}</span>,
         },
         {
             title: "Vehicle",
@@ -217,8 +217,8 @@ function ListingTable() {
                                     </div>
                                     <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
                                         <div className="text-gray-500 text-xs uppercase font-bold mb-1">Pricing</div>
-                                        <div className="text-lg font-bold text-[#2D8C3C]">AED {selectedListing.price}</div>
-                                        <div className="text-sm text-gray-400 line-through">Orig: AED {selectedListing.originalPrice}</div>
+                                        <div className="text-lg font-bold text-[#2D8C3C]">AED {Number(selectedListing.price || 0).toFixed(2)}</div>
+                                        <div className="text-sm text-gray-400 line-through">Orig: AED {Number(selectedListing.originalPrice || 0).toFixed(2)}</div>
                                     </div>
                                 </div>
 

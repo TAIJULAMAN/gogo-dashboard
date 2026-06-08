@@ -34,7 +34,7 @@ const DashboardStats = () => {
     },
     {
       label: "Total Earnings",
-      value: isLoading ? "..." : `AED ${dashboardData.totalEarning?.toFixed(2) || 0}`,
+      value: isLoading ? "..." : `AED ${Number(dashboardData.totalEarning || 0).toFixed(2)}`,
       icon: MdOutlineInventory2,
       color: "text-orange-600",
       bg: "bg-orange-50",

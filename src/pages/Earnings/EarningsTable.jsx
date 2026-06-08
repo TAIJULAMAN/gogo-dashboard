@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { FaRegEye } from "react-icons/fa";
 import { useGetAdminEarningsQuery } from "../../../Redux/features/earnings/earningsApi";
 import dayjs from "dayjs";
+import { imageUrl } from "../../../utils/server";
 
 function EarningsTable() {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -64,8 +65,13 @@ function EarningsTable() {
       title: "Full Name",
       dataIndex: "fullName",
       key: "fullName",
-      render: (value) => (
+      render: (value, record) => (
         <div className="flex items-center gap-3">
+          <img
+            src={imageUrl(record.user?.profileImage, value)}
+            className="w-10 h-10 object-cover rounded-full"
+            alt="Avatar"
+          />
           <span className="leading-none font-semibold text-gray-700">{value}</span>
         </div>
       ),
@@ -80,7 +86,7 @@ function EarningsTable() {
       title: "Commission",
       dataIndex: "commission",
       key: "commission",
-      render: (val) => <span className="font-bold text-[#2D8C3C]">AED {val}</span>,
+      render: (val) => <span className="font-bold text-[#2D8C3C]">AED {Number(val || 0).toFixed(2)}</span>,
     },
     {
       title: "Parcel ID",
@@ -147,7 +153,7 @@ function EarningsTable() {
               <div className="bg-[#2D8C3C] p-6 -m-6 mb-6 rounded-t-lg">
                 <div className="flex items-center gap-6">
                   <img
-                    src={`https://avatar.iran.liara.run/public/boy?username=${selectedUser.fullName}`}
+                    src={imageUrl(selectedUser.user?.profileImage, selectedUser.fullName)}
                     alt={selectedUser.fullName}
                     className="w-20 h-20 rounded-full border-2 border-white shadow-md object-cover"
                   />
@@ -166,7 +172,7 @@ function EarningsTable() {
               <div className="space-y-4">
                 <div className="bg-gray-50 p-5 rounded-2xl border border-gray-100 flex justify-between items-center">
                   <span className="text-gray-500 font-medium">Commission Amount</span>
-                  <span className="text-2xl font-black text-[#2D8C3C]">${selectedUser.commission}</span>
+                  <span className="text-2xl font-black text-[#2D8C3C]">AED {Number(selectedUser.commission || 0).toFixed(2)}</span>
                 </div>
                 <div className="bg-gray-50 p-5 rounded-2xl border border-gray-100">
                   <div className="text-gray-500 font-medium mb-1 text-xs uppercase tracking-wider">Parcel ID</div>
