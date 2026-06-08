@@ -1,9 +1,17 @@
 import { useState, useEffect, useRef } from "react";
 import Sidebar from "../shared/Sidebar/Sidebar";
 import MainHeader from "../shared/MainHeader/MainHeader";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const MainLayout = () => {
+  const token = useSelector((state) => state.auth.token);
+  const localToken = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+
+  if (!token && !localToken) {
+    return <Navigate to="/sign-in" replace />;
+  }
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 1024);
   const [pageTransition, setPageTransition] = useState("enter");
   const location = useLocation();
