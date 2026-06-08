@@ -28,23 +28,28 @@ const defaultData = [
 const TotalView = ({ year }) => {
   const [chartHeight, setChartHeight] = useState(220);
 
-  const { data, isLoading } = useGetUserGrowthQuery({
-    groupBy: "monthly",
-    dateFrom: `${year}-01-01T00:00:00.000Z`,
-    dateTo: `${year}-12-31T23:59:59.999Z`,
-  });
+  const { data, isLoading } = useGetUserGrowthQuery({ year });
 
   const chartData = useMemo(() => {
     if (!data?.data || !Array.isArray(data.data)) return defaultData;
 
-    const dataMap = {};
+    const monthlyCounts = {};
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
     data.data.forEach((item) => {
-      dataMap[item.month] = item.users || 0;
+      if (!item.date) return;
+      const dateParts = item.date.split("-");
+      if (dateParts.length < 2) return;
+      const monthIndex = parseInt(dateParts[1], 10) - 1; // 0-11
+      const monthName = months[monthIndex];
+      if (monthName) {
+        monthlyCounts[monthName] = (monthlyCounts[monthName] || 0) + (item.count || 0);
+      }
     });
 
     return defaultData.map((d) => ({
       ...d,
-      users: dataMap[d.month] !== undefined ? dataMap[d.month] : d.users,
+      users: monthlyCounts[d.month] !== undefined ? monthlyCounts[d.month] : 0,
     }));
   }, [data]);
 

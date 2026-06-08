@@ -39,23 +39,28 @@ const CustomTooltip = ({ active, payload }) => {
 };
 
 const EarningGrowthChart = ({ year }) => {
-  const { data, isLoading } = useGetEarningsGrowthQuery({
-    groupBy: "monthly",
-    dateFrom: `${year}-01-01T00:00:00.000Z`,
-    dateTo: `${year}-12-31T23:59:59.999Z`,
-  });
+  const { data, isLoading } = useGetEarningsGrowthQuery({ year });
 
   const chartData = useMemo(() => {
     if (!data?.data || !Array.isArray(data.data)) return defaultData;
 
-    const dataMap = {};
+    const monthlyAmounts = {};
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
     data.data.forEach((item) => {
-      dataMap[item.month] = item.revenue || 0;
+      if (!item.date) return;
+      const dateParts = item.date.split("-");
+      if (dateParts.length < 2) return;
+      const monthIndex = parseInt(dateParts[1], 10) - 1;
+      const monthName = months[monthIndex];
+      if (monthName) {
+        monthlyAmounts[monthName] = (monthlyAmounts[monthName] || 0) + (item.amount || 0);
+      }
     });
 
     return defaultData.map((d) => ({
       ...d,
-      earnings: dataMap[d.month] !== undefined ? dataMap[d.month] : d.earnings,
+      earnings: monthlyAmounts[d.month] !== undefined ? monthlyAmounts[d.month] : 0,
     }));
   }, [data]);
 

@@ -1,4 +1,4 @@
-import { ConfigProvider, Modal, Table, Select, Tag, message } from "antd";
+import { ConfigProvider, Modal, Table, Select, Tag, message, Image } from "antd";
 import { useMemo, useState } from "react";
 import { IoSearch, IoChevronBack } from "react-icons/io5";
 import { MdBlock, MdCheckCircle } from "react-icons/md";
@@ -122,8 +122,54 @@ function RiderManagement() {
     },
     { title: "Email", dataIndex: "email", key: "email" },
     { title: "Phone", dataIndex: "phoneNumber", key: "phoneNumber" },
-    { title: "Emirates ID", dataIndex: "emaratesId", key: "emaratesId" },
-    { title: "Driving License", dataIndex: "drivingLicense", key: "drivingLicense" },
+    {
+      title: "Emirates ID",
+      dataIndex: "emaratesId",
+      key: "emaratesId",
+      render: (url) => url && url.startsWith("http") ? (
+        <Image
+          src={url}
+          alt="Emirates ID"
+          width={60}
+          height={40}
+          className="rounded border border-gray-200 cursor-pointer object-cover animate-fade-in"
+        />
+      ) : (
+        <span className="text-gray-400 font-medium text-xs">{url || "Not Uploaded"}</span>
+      ),
+    },
+    {
+      title: "Driving License",
+      dataIndex: "drivingLicense",
+      key: "drivingLicense",
+      render: (url) => url && url.startsWith("http") ? (
+        <Image
+          src={url}
+          alt="Driving License"
+          width={60}
+          height={40}
+          className="rounded border border-gray-200 cursor-pointer object-cover animate-fade-in"
+        />
+      ) : (
+        <span className="text-gray-400 font-medium text-xs">{url || "Not Uploaded"}</span>
+      ),
+    },
+    {
+      title: "Vehicle Registration",
+      dataIndex: "vehicleRegistration",
+      key: "vehicleRegistration",
+      render: (url) => url && url.startsWith("http") ? (
+        <Image
+          src={url}
+          alt="Vehicle Registration"
+          width={60}
+          height={40}
+          className="rounded border border-gray-200 cursor-pointer object-cover animate-fade-in"
+        />
+      ) : (
+        <span className="text-gray-400 font-medium text-xs">{url || "Not Uploaded"}</span>
+      ),
+    },
     {
       title: "Status",
       dataIndex: "status",
@@ -309,8 +355,6 @@ function RiderManagement() {
               {[
                 ["Email", viewRider.email],
                 ["Phone", viewRider.phoneNumber],
-                ["Emirates ID", viewRider.emaratesId],
-                ["Driving License", viewRider.drivingLicense],
                 ["Joined Date", dayjs(viewRider.createdAt).format("MMM DD, YYYY")],
               ].map(([label, val]) => (
                 <div key={label} className="bg-white border border-gray-200 p-4 rounded-xl shadow-sm">
@@ -318,6 +362,51 @@ function RiderManagement() {
                   <div className="text-base font-semibold">{val}</div>
                 </div>
               ))}
+            </div>
+
+            <div className="mt-6">
+              <h3 className="text-base font-bold text-gray-800 mb-3 border-b pb-2">Documents (Click to Preview)</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="flex flex-col items-center p-3 bg-gray-50 rounded-xl border border-gray-200">
+                  <span className="text-xs font-semibold text-gray-500 mb-2">Emirates ID</span>
+                  {viewRider.emaratesId && viewRider.emaratesId.startsWith("http") ? (
+                    <Image
+                      src={viewRider.emaratesId}
+                      className="rounded object-cover"
+                      height={60}
+                      width={90}
+                    />
+                  ) : (
+                    <span className="text-xs text-gray-400 py-4 font-semibold">{viewRider.emaratesId || "Not Uploaded"}</span>
+                  )}
+                </div>
+                <div className="flex flex-col items-center p-3 bg-gray-50 rounded-xl border border-gray-200">
+                  <span className="text-xs font-semibold text-gray-500 mb-2">Driving License</span>
+                  {viewRider.drivingLicense && viewRider.drivingLicense.startsWith("http") ? (
+                    <Image
+                      src={viewRider.drivingLicense}
+                      className="rounded object-cover"
+                      height={60}
+                      width={90}
+                    />
+                  ) : (
+                    <span className="text-xs text-gray-400 py-4 font-semibold">{viewRider.drivingLicense || "Not Uploaded"}</span>
+                  )}
+                </div>
+                <div className="flex flex-col items-center p-3 bg-gray-50 rounded-xl border border-gray-200">
+                  <span className="text-xs font-semibold text-gray-500 mb-2">Vehicle Registration</span>
+                  {viewRider.vehicleRegistration && viewRider.vehicleRegistration.startsWith("http") ? (
+                    <Image
+                      src={viewRider.vehicleRegistration}
+                      className="rounded object-cover"
+                      height={60}
+                      width={90}
+                    />
+                  ) : (
+                    <span className="text-xs text-gray-400 py-4 font-semibold">{viewRider.vehicleRegistration || "Not Uploaded"}</span>
+                  )}
+                </div>
+              </div>
             </div>
 
             <div className="flex justify-end mt-6 pt-4 border-t border-gray-200">

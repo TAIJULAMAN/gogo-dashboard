@@ -39,25 +39,28 @@ const CustomTooltip = ({ active, payload }) => {
 };
 
 const RiderGrowthChart = ({ year }) => {
-  const { data, isLoading } = useGetRiderGrowthQuery({
-    groupBy: "monthly",
-    dateFrom: `${year}-01-01T00:00:00.000Z`,
-    dateTo: `${year}-12-31T23:59:59.999Z`,
-  });
+  const { data, isLoading } = useGetRiderGrowthQuery({ year });
 
   const chartData = useMemo(() => {
     if (!data?.data || !Array.isArray(data.data)) return defaultData;
-    
-    // Create a map of API data
-    const dataMap = {};
-    data.data.forEach(item => {
-      dataMap[item.month] = item.riders;
+
+    const monthlyCounts = {};
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    data.data.forEach((item) => {
+      if (!item.date) return;
+      const dateParts = item.date.split("-");
+      if (dateParts.length < 2) return;
+      const monthIndex = parseInt(dateParts[1], 10) - 1;
+      const monthName = months[monthIndex];
+      if (monthName) {
+        monthlyCounts[monthName] = (monthlyCounts[monthName] || 0) + (item.count || 0);
+      }
     });
 
-    // Merge with defaultData to ensure all months are present
-    return defaultData.map(d => ({
+    return defaultData.map((d) => ({
       ...d,
-      riders: dataMap[d.month] !== undefined ? dataMap[d.month] : d.riders
+      riders: monthlyCounts[d.month] !== undefined ? monthlyCounts[d.month] : 0,
     }));
   }, [data]);
 
