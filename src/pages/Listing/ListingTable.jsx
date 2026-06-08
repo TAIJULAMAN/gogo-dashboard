@@ -4,6 +4,7 @@ import { IoSearch } from "react-icons/io5";
 import { FaRegEye } from "react-icons/fa";
 import { useGetAllOrdersQuery } from "../../../Redux/features/orderManagement/orderManagementApi";
 import dayjs from "dayjs";
+import { imageUrl } from "../../../utils/server";
 
 function ListingTable() {
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -51,7 +52,7 @@ function ListingTable() {
             render: (_, record) => (
                 <div className="flex items-center gap-3">
                     <img
-                        src="/avatar.png"
+                        src={imageUrl(record.user?.profileImage, record.user ? `${record.user.firstName} ${record.user.lastName}` : "")}
                         className="w-10 h-10 object-cover rounded-full border border-gray-200"
                         alt="user"
                     />

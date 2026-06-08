@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { IoMenu, IoNotificationsOutline } from "react-icons/io5";
 import { useGetProfileQuery } from "../../../Redux/features/settings/profileApi";
 import { useGetAllNotificationQuery } from "../../../Redux/features/notification/notificationApi";
+import { imageUrl } from "../../../utils/server";
 
 const MainHeader = ({ toggleSidebar }) => {
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ const MainHeader = ({ toggleSidebar }) => {
               className="flex items-center gap-2 cursor-default"
             >
               <img
-                src="/avatar.png"
+                src={imageUrl(user?.profileImage, user ? `${user.firstName} ${user.lastName}` : "")}
                 className="w-8 md:w-12 h-8 md:h-12 object-cover rounded-full ring-2 ring-primary/50"
                 alt="User Avatar"
               />

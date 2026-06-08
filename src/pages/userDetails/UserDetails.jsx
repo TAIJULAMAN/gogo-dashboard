@@ -7,6 +7,7 @@ import { LuUsers } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import { useGetAllUsersQuery, useBlockUserMutation } from "../../../Redux/features/user/userApi";
 import dayjs from "dayjs";
+import { imageUrl } from "../../../utils/server";
 
 const statusColor = {
   Active: { bg: "bg-green-100", text: "text-green-700" },
@@ -83,7 +84,7 @@ function UserDetails() {
       render: (_, record) => (
         <div className="flex items-center gap-3">
           <img
-            src={`/avatar.png`}
+            src={imageUrl(record.profileImage, `${record.firstName} ${record.lastName}`)}
             className="w-10 h-10 object-cover rounded-full"
             alt="User Avatar"
           />
@@ -251,7 +252,7 @@ function UserDetails() {
             <div className="bg-gradient-to-r from-[#2D8C3C] to-[#3aad50] p-6 -m-6 mb-6 rounded-t-lg">
               <div className="flex items-center gap-5">
                 <img
-                  src={`https://avatar.iran.liara.run/public/boy?username=${viewUser.firstName}`}
+                  src={imageUrl(viewUser.profileImage, `${viewUser.firstName} ${viewUser.lastName}`)}
                   alt={viewUser.firstName}
                   className="w-20 h-20 rounded-full border-4 border-white shadow-lg object-cover"
                 />
