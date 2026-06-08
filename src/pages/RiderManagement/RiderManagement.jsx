@@ -126,48 +126,30 @@ function RiderManagement() {
       title: "Emirates ID",
       dataIndex: "emaratesId",
       key: "emaratesId",
-      render: (url) => url && url.startsWith("http") ? (
-        <Image
-          src={url}
-          alt="Emirates ID"
-          width={60}
-          height={40}
-          className="rounded border border-gray-200 cursor-pointer object-cover animate-fade-in"
-        />
+      render: (url) => url ? (
+        <span className="text-green-600 font-semibold text-xs bg-green-50 px-2 py-1 rounded border border-green-200">Uploaded</span>
       ) : (
-        <span className="text-gray-400 font-medium text-xs">{url || "Not Uploaded"}</span>
+        <span className="text-gray-400 font-medium text-xs bg-gray-50 px-2 py-1 rounded border border-gray-200">Not Uploaded</span>
       ),
     },
     {
       title: "Driving License",
       dataIndex: "drivingLicense",
       key: "drivingLicense",
-      render: (url) => url && url.startsWith("http") ? (
-        <Image
-          src={url}
-          alt="Driving License"
-          width={60}
-          height={40}
-          className="rounded border border-gray-200 cursor-pointer object-cover animate-fade-in"
-        />
+      render: (url) => url ? (
+        <span className="text-green-600 font-semibold text-xs bg-green-50 px-2 py-1 rounded border border-green-200">Uploaded</span>
       ) : (
-        <span className="text-gray-400 font-medium text-xs">{url || "Not Uploaded"}</span>
+        <span className="text-gray-400 font-medium text-xs bg-gray-50 px-2 py-1 rounded border border-gray-200">Not Uploaded</span>
       ),
     },
     {
       title: "Vehicle Registration",
       dataIndex: "vehicleRegistration",
       key: "vehicleRegistration",
-      render: (url) => url && url.startsWith("http") ? (
-        <Image
-          src={url}
-          alt="Vehicle Registration"
-          width={60}
-          height={40}
-          className="rounded border border-gray-200 cursor-pointer object-cover animate-fade-in"
-        />
+      render: (url) => url ? (
+        <span className="text-green-600 font-semibold text-xs bg-green-50 px-2 py-1 rounded border border-green-200">Uploaded</span>
       ) : (
-        <span className="text-gray-400 font-medium text-xs">{url || "Not Uploaded"}</span>
+        <span className="text-gray-400 font-medium text-xs bg-gray-50 px-2 py-1 rounded border border-gray-200">Not Uploaded</span>
       ),
     },
     {
