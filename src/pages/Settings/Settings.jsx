@@ -55,6 +55,16 @@ export default function Settings() {
               <IoChevronForward className="text-gray-500" />
             </Link>
           </li>
+          {/* FAQ Settings */}
+          <li>
+            <Link
+              to="/faq-settings"
+              className="flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition"
+            >
+              <span className="text-gray-800 text-base">FAQ Settings</span>
+              <IoChevronForward className="text-gray-500" />
+            </Link>
+          </li>
         </ul>
       </div>
     </div>

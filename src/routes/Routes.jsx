@@ -11,6 +11,7 @@ import UserDetails from "../pages/userDetails/UserDetails";
 import Notifications from "../pages/Notifications/Notifications";
 import ProfilePage from "../pages/profile/ProfilePage";
 import Settings from "../pages/Settings/Settings";
+import FaqSettings from "../pages/Settings/FaqSettings";
 import ChangePass from "../pages/profile/ChangePass";
 import AboutUs from "../pages/optional/AboutUs";
 import EditProfile from "../pages/profile/EditProfile";
@@ -101,6 +102,10 @@ const router = createBrowserRouter([
       {
         path: "/about-us",
         element: <AboutUs />,
+      },
+      {
+        path: "/faq-settings",
+        element: <FaqSettings />,
       },
       {
         path: "/parameter",
