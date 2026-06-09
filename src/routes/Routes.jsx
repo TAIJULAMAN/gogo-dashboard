@@ -21,6 +21,7 @@ import RiderManagement from "../pages/RiderManagement/RiderManagement";
 import Parameter from "../pages/Parameter/Parameter";
 import HotArea from "../pages/HotArea/HotArea";
 import ErrorPage from "../components/ErrorPage/ErrorPage";
+import SupportMessages from "../pages/SupportMessages/SupportMessages";
 
 const router = createBrowserRouter([
   {
@@ -119,6 +120,10 @@ const router = createBrowserRouter([
       {
         path: "/profile",
         element: <ProfilePage />,
+      },
+      {
+        path: "/support-messages",
+        element: <SupportMessages />,
       },
     ],
   },
