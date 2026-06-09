@@ -10,6 +10,7 @@ import {
   MdTune,
 } from "react-icons/md";
 import { FaMotorcycle, FaFireAlt } from "react-icons/fa";
+import { BiSupport } from "react-icons/bi";
 
 const navItems = [
   { path: "/", label: "Dashboard", icon: RxDashboard },
@@ -19,6 +20,7 @@ const navItems = [
   { path: "/order-management", label: "Order Management", icon: MdList },
   { path: "/parameter", label: "Parameter", icon: MdTune },
   { path: "/hot-area", label: "Hot Area", icon: FaFireAlt },
+  { path: "/support-messages", label: "Support Messages", icon: BiSupport },
   { path: "/settings", label: "Settings", icon: IoMdSettings },
 ];
 
